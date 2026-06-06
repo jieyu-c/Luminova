@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luminova 画布工作台 · 概念设计</title>
+  <link rel="stylesheet" href="./styles.css?v=canvas-drag">
+</head>
+<body class="page-canvas">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="shell-nav shell-nav--canvas">
+    <div class="shell-canvas-left">
+      <a class="brand" href="./index.html">
+        <img class="brand-logo" src="./assets/luminova-logo-hifi.png" alt="Luminova">
+      </a>
+      <a class="back-workspace" href="./workspace.html" title="返回工作空间">←</a>
+      <div class="canvas-title">
+        <span>雨夜便利店</span>
+        <i>/</i>
+        <strong>Shot 03</strong>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button">导出</button>
+      <button class="btn primary" type="button">运行生成</button>
+    </div>
+  </header>
+
+  <div class="canvas-app">
+    <aside class="canvas-rail" aria-label="画布工具">
+      <button class="rail-btn active" type="button" title="选择">↖</button>
+      <button class="rail-btn" type="button" title="平移">✥</button>
+      <button class="rail-btn accent" type="button" title="节点库">+</button>
+      <button class="rail-btn" type="button" title="图层">☰</button>
+      <button class="rail-btn" type="button" title="Agent">✦</button>
+      <span class="rail-gap"></span>
+      <div class="rail-zoom" aria-label="缩放">
+        <button class="rail-mini" type="button">−</button>
+        <span>82%</span>
+        <button class="rail-mini" type="button">+</button>
+      </div>
+    </aside>
+
+    <main class="canvas-stage">
+      <section class="canvas-area">
+        <div class="canvas-board layout-absolute" id="canvas-board">
+          <svg class="canvas-wires" aria-hidden="true">
+            <defs>
+              <linearGradient id="wire-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#2563eb"></stop>
+                <stop offset="50%" stop-color="#06b6d4"></stop>
+                <stop offset="100%" stop-color="#7c3aed"></stop>
+              </linearGradient>
+            </defs>
+          </svg>
+          <!-- 剧本 -->
+          <article class="media-node node-script" style="--accent:var(--node-script)">
+            <i class="port out"></i>
+            <header class="node-toolbar">
+              <span class="type-badge">剧本</span>
+              <strong>货架后的录像</strong>
+              <button type="button" class="toolbar-end">编辑</button>
+            </header>
+            <div class="node-preview preview-text">
+              <div class="node-summary">失忆侦探在便利店发现未来影像，结尾反转。</div>
+            </div>
+            <footer class="node-compose">
+              <div class="compose-bar"><span>雨夜便利店 · 失忆侦探</span><button class="btn primary sm" type="button">生成分镜</button></div>
+            </footer>
+          </article>
+
+          <!-- 角色 -->
+          <article class="media-node node-role" style="--accent:var(--node-role)">
+            <i class="port out"></i>
+            <header class="node-toolbar">
+              <span class="type-badge">角色</span>
+              <strong>林夏</strong>
+              <button type="button" class="toolbar-end">设定</button>
+            </header>
+            <div class="node-preview preview-split">
+              <div class="split-media">
+                <div class="thumb-image"></div>
+                <div class="node-summary">黑色风衣，短发，电影感侧光。Prompt 已锁定。</div>
+              </div>
+            </div>
+            <footer class="node-compose">
+              <div class="compose-bar"><span>参考图 2</span><button class="btn primary sm" type="button">生成参考图</button></div>
+            </footer>
+          </article>
+
+          <!-- 分镜（选中） -->
+          <article class="media-node node-shot selected" style="--accent:var(--node-shot)">
+            <i class="port in"></i><i class="port out"></i>
+            <header class="node-toolbar">
+              <span class="type-badge">分镜</span>
+              <strong>Shot 03</strong>
+              <button type="button" class="toolbar-end">运镜</button>
+            </header>
+            <div class="node-preview preview-text">
+              <div class="node-summary">手电扫过货架，近景推镜，湿润反光。</div>
+            </div>
+            <footer class="node-compose">
+              <div class="compose-bar"><span>近景 / 推镜 / 平视</span><button class="btn primary sm" type="button">生成 Prompt</button></div>
+            </footer>
+          </article>
+
+          <!-- Prompt -->
+          <article class="media-node node-prompt" style="--accent:var(--node-prompt)">
+            <i class="port in"></i><i class="port out"></i>
+            <header class="node-toolbar">
+              <span class="type-badge">Prompt</span>
+              <strong>cinematic-v3</strong>
+              <button type="button" class="toolbar-end">优化</button>
+            </header>
+            <div class="node-preview preview-text">
+              <div class="node-summary mono">rainy store, flashlight, cinematic, wet asphalt reflection…</div>
+            </div>
+            <footer class="node-compose">
+              <div class="compose-bar">
+                <span>负向词已合并</span>
+                <button class="btn primary sm" type="button">发起生成</button>
+              </div>
+            </footer>
+          </article>
+
+          <!-- 视频结果 -->
+          <article class="media-node node-video media-node--video" style="--accent:var(--node-video)">
+            <i class="port in"></i>
+            <header class="node-toolbar">
+              <span class="type-badge">视频</span>
+              <strong>结果 V3</strong>
+              <button type="button" class="toolbar-end">⤢</button>
+            </header>
+            <div class="node-preview preview-video">
+              <div class="video-frame">
+                <div class="video-placeholder"></div>
+                <div class="video-controls">
+                  <button type="button">▶</button>
+                  <div class="progress-track"><i style="--value:35%"></i></div>
+                  <span>0:02/0:05</span>
+                </div>
+              </div>
+            </div>
+            <footer class="node-compose">
+              <div class="compose-bar compose-bar--model">
+                <span>全能参考 · 9:16 · 5s · 480P</span>
+                <button class="btn sm" type="button">高清</button>
+                <button class="btn-generate" type="button">↑ <small>42</small></button>
+              </div>
+            </footer>
+          </article>
+
+          <!-- 场景 -->
+          <article class="media-node node-scene" style="--accent:var(--node-scene)">
+            <i class="port in"></i><i class="port out"></i>
+            <header class="node-toolbar">
+              <span class="type-badge">场景</span>
+              <strong>雨夜便利店</strong>
+              <button type="button" class="toolbar-end">替换</button>
+            </header>
+            <div class="node-preview preview-image">
+              <div class="thumb-image wide"></div>
+            </div>
+            <footer class="node-compose">
+              <div class="compose-bar"><span>霓虹冷光 · 低调光</span><button class="btn primary sm" type="button">生成变体</button></div>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <button class="float-pill queue-pill" type="button">
+        <span class="status-dot" style="--accent:var(--cyan)"></span>
+        5 生成中
+      </button>
+    </main>
+  </div>
+
+  <div class="design-badge">概念设计稿 · 可拖拽节点</div>
+  <script src="./canvas.js" defer></script>
+</body>
+</html>

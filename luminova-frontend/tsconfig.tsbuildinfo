@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/capabilitystrip.tsx","./src/components/header.tsx","./src/components/hero.tsx","./src/components/promostrip.tsx","./src/components/showcase.tsx","./src/components/canvas/canvaspreview.tsx","./src/data/home.ts","./src/lib/cn.ts"],"version":"5.9.3"}
