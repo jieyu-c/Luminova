@@ -169,9 +169,7 @@ body {
   width: 34px;
   height: 34px;
   object-fit: contain;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+  filter: drop-shadow(0 8px 20px rgba(37, 99, 235, 0.12));
 }
 
 .actions {
@@ -1026,9 +1024,8 @@ body {
   width: 40px;
   height: 40px;
   margin-bottom: 12px;
-  border-radius: 12px;
   object-fit: contain;
-  background: #fff;
+  filter: drop-shadow(0 8px 18px rgba(37, 99, 235, 0.14));
 }
 
 .workspace-body {

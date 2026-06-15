@@ -7,7 +7,6 @@
         <artifactId>Luminova</artifactId>
         <version>1.0-SNAPSHOT</version> <!-- lookup parent from repository -->
     </parent>
-    <groupId>cn.jieyuc</groupId>
     <artifactId>luminova-common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -33,15 +32,15 @@
     <modules>
         <module>luminova-sa-token</module>
         <module>luminova-web</module>
+        <module>luminova-datasource</module>
+        <module>luminova-rpc</module>
+        <module>luminova-nacos</module>
     </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
+    <dependencies>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.22</version>
+        </dependency>
+    </dependencies>
 </project>

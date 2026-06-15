@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luminova 灵衍 · 官网静态原型</title>
+  <link rel="stylesheet" href="./home-showcase.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./home-showcase.html" aria-label="Luminova 灵衍首页">
+      <img class="brand-mark" src="./home-showcase-assets/luminova-mark.png" alt="">
+      <span class="brand-name">Luminova <em>灵衍</em></span>
+    </a>
+    <nav class="site-nav" aria-label="官网导航">
+      <a href="#product">产品</a>
+      <a href="#workflow">工作流</a>
+      <a href="#cases">案例</a>
+      <a href="#pricing">定价</a>
+    </nav>
+    <div class="site-actions">
+      <a class="btn btn-quiet" href="#">登录</a>
+      <a class="btn btn-primary" href="#">开始创作</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="product">
+      <div class="hero-copy">
+        <p class="eyebrow">AI 视频 · 无限画布工作流</p>
+        <h1><span>把 AI 视频创作，</span><span>展开成一张可控画布</span></h1>
+        <p class="hero-lead">
+          剧本、角色、场景、Prompt 与视频版本被组织成可追溯的创作资产，
+          团队能看见每一步生成依据。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-large" href="#">免费开始</a>
+          <a class="btn btn-outline btn-large" href="#">查看产品演示</a>
+        </div>
+        <div class="trust-chips" aria-label="产品价值">
+          <span>Canvas-first</span>
+          <span>Agent co-pilot</span>
+          <span>角色一致性</span>
+        </div>
+        <div class="idea-panel" aria-label="灵感输入示例">
+          <div>
+            <span>灵感输入</span>
+            <strong>雨夜便利店里的未来录像</strong>
+          </div>
+          <ol>
+            <li>拆剧本</li>
+            <li>建画布</li>
+            <li>出首版</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="hero-preview" aria-label="产品预览摘要">
+        <div class="agent-panel-head">
+          <span>Agent Co-pilot</span>
+          <b>自动把灵感拆成可执行工作流</b>
+        </div>
+        <div class="agent-checklist" aria-label="Agent 能力">
+          <span class="done">拆解剧本结构</span>
+          <span class="done">锁定角色一致性</span>
+          <span class="active">生成分镜候选</span>
+          <span>检查缺失素材</span>
+        </div>
+        <div class="preview-card">
+          <img src="./home-showcase-assets/project-rain.png" alt="雨夜悬疑短剧预览">
+          <div>
+            <b>第 03 场 · 天台对峙</b>
+            <small>角色一致性 92% · Prompt 已复用 12 次</small>
+          </div>
+        </div>
+        <div class="agent-output">
+          <span>下一步建议</span>
+          <strong>补充反打镜头，并生成 3 个低饱和光影版本。</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section" aria-label="产品工作流展示">
+      <div class="section-heading section-heading--left">
+        <p>Product Preview</p>
+        <h2>从灵感输入到视频版本，每一步都能被看见</h2>
+      </div>
+      <div class="product-showcase" aria-label="Luminova 产品能力展示">
+        <div class="canvas-grid"></div>
+        <div class="showcase-flow">
+          <article class="node node-script">
+            <span>剧本</span>
+            <strong>记忆修复师</strong>
+            <small>第 1 集 · 雨夜开场</small>
+          </article>
+          <article class="node node-character">
+            <span>角色设定</span>
+            <img src="./home-showcase-assets/character-face.png" alt="角色缩略图">
+            <strong>林夏 · 女主</strong>
+            <small>一致性 92%</small>
+          </article>
+          <article class="node node-storyboard">
+            <span>分镜板</span>
+            <strong>第 03 场 · 天台对峙</strong>
+            <div class="story-strip">
+              <img src="./home-showcase-assets/project-rain.png" alt="分镜一">
+              <img src="./home-showcase-assets/video-output.png" alt="分镜二">
+              <img src="./home-showcase-assets/project-anime.png" alt="分镜三">
+              <img src="./home-showcase-assets/project-rain.png" alt="分镜四">
+            </div>
+            <small>共 24 个镜头</small>
+          </article>
+          <article class="node node-prompt">
+            <span>Prompt</span>
+            <p>夜雨、霓虹反射、电影级光感、35mm 镜头、低饱和对比...</p>
+            <small>已复用 12 次</small>
+          </article>
+        </div>
+        <div class="showcase-detail">
+          <article class="consistency-card">
+            <span>角色一致性</span>
+            <div class="faces">
+              <img src="./home-showcase-assets/character-face.png" alt="">
+              <img src="./home-showcase-assets/character-face.png" alt="">
+              <img src="./home-showcase-assets/character-face.png" alt="">
+            </div>
+            <label>面部特征 <b>92%</b></label>
+            <div class="bar"><i style="width:92%"></i></div>
+            <label>发型 <b>93%</b></label>
+            <div class="bar"><i style="width:93%"></i></div>
+          </article>
+          <article class="node node-version">
+            <span>视频版本 v2.4</span>
+            <div class="compare">
+              <img src="./home-showcase-assets/video-output.png" alt="视频版本对比">
+              <i></i>
+            </div>
+            <small>4K · 24fps · 02:15</small>
+          </article>
+        </div>
+        <div class="agent-flow">
+          <b>Agent 正在整理创作链路</b>
+          <ol>
+            <li class="done">拆剧本</li>
+            <li class="done">锁角色</li>
+            <li class="active">生成分镜</li>
+            <li>导出版本</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="metric-band" aria-label="产品指标">
+      <div>
+        <strong>10min</strong>
+        <span>首版片段</span>
+        <small>从灵感到可用的视频片段</small>
+      </div>
+      <div>
+        <strong>7类</strong>
+        <span>创作节点</span>
+        <small>覆盖剧本到成片的完整链路</small>
+      </div>
+      <div>
+        <strong>4种</strong>
+        <span>资产继承</span>
+        <small>角色 / 场景 / 风格 / Prompt 继承</small>
+      </div>
+    </section>
+
+    <section class="capability-strip" aria-label="核心能力">
+      <article>
+        <span>01</span>
+        <b>节点化工作流</b>
+        <p>剧本到视频全链路可视化编排，依赖关系一目了然。</p>
+      </article>
+      <article>
+        <span>02</span>
+        <b>Agent 批量助手</b>
+        <p>自动拆解、补全 Prompt、检查缺失项，减少重复劳动。</p>
+      </article>
+      <article>
+        <span>03</span>
+        <b>版本可追溯</b>
+        <p>每次生成保留参数与上下文，支持对比与回滚。</p>
+      </article>
+      <article>
+        <span>04</span>
+        <b>专业可控</b>
+        <p>面向短剧、广告、漫剧团队，而不是一键玩具流。</p>
+      </article>
+    </section>
+
+    <section class="control-section" id="workflow">
+      <div class="section-heading">
+        <p>Product Control</p>
+        <h2>产品如何帮团队保持控制感</h2>
+      </div>
+      <div class="value-list">
+        <article>
+          <b>资产不丢失</b>
+          <p>角色、场景、风格与 Prompt 被结构化管理，一致性在项目间延续。</p>
+        </article>
+        <article>
+          <b>生成可追溯</b>
+          <p>每一步生成都有来源与参数记录，版本演化清晰可见，随时回溯。</p>
+        </article>
+        <article>
+          <b>Agent 承担重复劳动</b>
+          <p>自动拆解剧本、锁定角色、生成分镜与版本管理，让团队专注创意判断。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cases" id="cases">
+      <div class="section-row">
+        <div>
+          <p>Use Cases</p>
+          <h2>从创意到成片，团队都在用 Luminova</h2>
+        </div>
+        <a href="#">查看全部案例</a>
+      </div>
+      <div class="case-grid">
+        <article class="case-card">
+          <img src="./home-showcase-assets/project-rain.png" alt="雨夜悬疑短剧">
+          <div>
+            <h3>雨夜悬疑短剧</h3>
+            <p>复杂角色与多场景连续叙事，风格统一，版本迭代高效。</p>
+            <span>悬疑</span><span>短剧</span><span>连续性</span>
+          </div>
+        </article>
+        <article class="case-card">
+          <img src="./home-showcase-assets/project-ad.png" alt="新品广告预演">
+          <div>
+            <h3>新品广告预演</h3>
+            <p>快速验证创意与镜头方案，支持多版本对比与客户评审。</p>
+            <span>广告</span><span>产品</span><span>分镜预演</span>
+          </div>
+        </article>
+        <article class="case-card">
+          <img src="./home-showcase-assets/project-anime.png" alt="漫剧镜头库">
+          <div>
+            <h3>漫剧镜头库</h3>
+            <p>沉淀可复用镜头资产库，提升产能，保障画风一致。</p>
+            <span>动画</span><span>漫剧</span><span>镜头库</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('.btn, .case-card, .node').forEach((el) => {
+      el.addEventListener('pointermove', (event) => {
+        const rect = el.getBoundingClientRect();
+        el.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+        el.style.setProperty('--my', `${event.clientY - rect.top}px`);
+      });
+    });
+  </script>
+</body>
+</html>

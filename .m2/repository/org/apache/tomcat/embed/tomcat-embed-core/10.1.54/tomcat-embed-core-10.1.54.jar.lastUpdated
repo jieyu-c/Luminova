@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Wed Jun 10 23:53:33 CST 2026
+@default-central-https\://repo.maven.apache.org/maven2/.lastUpdated=1781106813092
+https\://repo.maven.apache.org/maven2/.error=Could not transfer artifact org.apache.tomcat.embed\:tomcat-embed-core\:jar\:10.1.54 from/to central (https\://repo.maven.apache.org/maven2)\: Premature end of Content-Length delimited message body (expected\: 3,667,209; received\: 3,493,568)

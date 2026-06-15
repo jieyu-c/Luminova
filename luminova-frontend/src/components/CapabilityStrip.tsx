@@ -1,15 +1,13 @@
-import { capabilities } from '../data/home';
-
-const capIcons = ['◇', '◎', '▣', '⬡'] as const;
+import { capabilityItems } from '../data/home';
 
 export function CapabilityStrip() {
   return (
     <section className="capability-strip" aria-label="核心能力">
-      {capabilities.map((item, index) => (
-        <article className="cap-item" key={item.title}>
-          <div className="cap-icon">{capIcons[index]}</div>
+      {capabilityItems.map((item) => (
+        <article key={item.index}>
+          <span>{item.index}</span>
           <b>{item.title}</b>
-          <span>{item.text}</span>
+          <p>{item.text}</p>
         </article>
       ))}
     </section>

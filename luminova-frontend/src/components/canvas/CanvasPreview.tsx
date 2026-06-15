@@ -1,12 +1,19 @@
-import { flowNodes } from '../../data/home';
+import { previewWires as wires } from '../../data/canvas-preview';
 
-const wires = [
-  { left: 132, top: 139, width: 54, rotate: 18 },
-  { left: 274, top: 140, width: 52, rotate: -18 },
-  { left: 144, top: 260, width: 54, rotate: -18 },
-  { left: 276, top: 264, width: 52, rotate: 14 },
-  { left: 330, top: 205, width: 54, rotate: 88 },
-] as const;
+type PreviewNode = {
+  kind: 'script' | 'role' | 'shot' | 'prompt' | 'scene' | 'video';
+  title: string;
+  detail: string;
+};
+
+const flowNodes: PreviewNode[] = [
+  { kind: 'script', title: '剧本', detail: '开场 / 反转' },
+  { kind: 'role', title: '角色', detail: '林夏 · 已锁定' },
+  { kind: 'shot', title: '分镜 03', detail: '近景推镜' },
+  { kind: 'prompt', title: 'Prompt', detail: '角色 + 运镜' },
+  { kind: 'scene', title: '场景', detail: '雨夜便利店' },
+  { kind: 'video', title: '视频 V3', detail: '首选版本' },
+];
 
 export function CanvasPreview() {
   return (

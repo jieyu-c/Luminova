@@ -1,25 +1,25 @@
-import { showcase } from '../data/home';
+import { cases } from '../data/home';
 
 export function Showcase() {
   return (
-    <section className="showcase" id="cases">
-      <div className="section-head">
-        <h2>作品预期</h2>
-        <p>展示可控工作流带来的分镜预演、广告 Demo 与短剧批量生产能力。</p>
+    <section className="cases" id="cases">
+      <div className="section-row">
+        <div>
+          <p>Use Cases</p>
+          <h2>从创意到成片，团队都在用 Luminova</h2>
+        </div>
+        <a href="#cases">查看全部案例</a>
       </div>
-      <div className="showcase-grid">
-        {showcase.map((item, index) => (
-          <article className="showcase-card" key={item.title}>
-            <div className={`showcase-art showcase-art--${index + 1}`} />
-            <div className="showcase-body">
+      <div className="case-grid">
+        {cases.map((item) => (
+          <article className="case-card" key={item.title}>
+            <img src={item.image} alt={item.title} />
+            <div>
               <h3>{item.title}</h3>
-              <div className="meta">
-                {item.tags.map((tag) => (
-                  <span className="pill" key={tag}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              <p>{item.desc}</p>
+              {item.tags.map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
             </div>
           </article>
         ))}
