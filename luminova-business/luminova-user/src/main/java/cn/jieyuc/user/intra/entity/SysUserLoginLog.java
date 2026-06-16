@@ -1,4 +1,4 @@
-package cn.jieyuc.user.pojo.entity;
+package cn.jieyuc.user.intra.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;

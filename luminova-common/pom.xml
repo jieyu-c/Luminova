@@ -35,6 +35,8 @@
         <module>luminova-datasource</module>
         <module>luminova-rpc</module>
         <module>luminova-nacos</module>
+        <module>luminova-api</module>
+        <module>luminova-base</module>
     </modules>
     <dependencies>
         <dependency>

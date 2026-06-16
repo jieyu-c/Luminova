@@ -2,7 +2,7 @@ package cn.jieyuc.user.controller;
 
 import cn.jieyuc.user.pojo.request.LoginRequest;
 import cn.jieyuc.user.pojo.response.LoginResponse;
-import cn.jieyuc.user.service.UserService;
+import cn.jieyuc.user.domain.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
