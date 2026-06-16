@@ -30,6 +30,17 @@
             <artifactId>luminova-nacos</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>cn.jieyuc</groupId>
+            <artifactId>luminova-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.jieyuc</groupId>
+            <artifactId>luminova-rpc</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
