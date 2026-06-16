@@ -39,3 +39,4 @@ build/
 
 # Local Docker/Nacos secrets
 .env.nacos
+.env
