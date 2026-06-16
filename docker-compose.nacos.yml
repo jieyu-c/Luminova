@@ -15,8 +15,234 @@ services:
     volumes:
       - nacos-data:/home/nacos/data
       - nacos-logs:/home/nacos/logs
+    networks:
+      - luminova-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/v1/console/health/readiness"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
     restart: unless-stopped
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: luminova-pgsql
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-luminova}
+      POSTGRES_USER: ${POSTGRES_USER:-luminova}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-luminova123}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - luminova-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-luminova} -d ${POSTGRES_DB:-luminova}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: luminova-mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-luminova}
+      MYSQL_USER: ${MYSQL_USER:-luminova}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-luminova123}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - luminova-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD:-root123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: luminova-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-luminova123}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - luminova-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-luminova123}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  rmqnamesrv:
+    image: apache/rocketmq:5.3.4
+    container_name: luminova-rmqnamesrv
+    ports:
+      - "${ROCKETMQ_NAMESRV_PORT:-9876}:9876"
+    volumes:
+      - rocketmq-namesrv-logs:/home/rocketmq/logs
+    networks:
+      - luminova-net
+    command: sh mqnamesrv
+    healthcheck:
+      test: ["CMD-SHELL", "ss -ltn | grep -q ':9876' || netstat -ltn | grep -q ':9876'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+  rmqbroker:
+    image: apache/rocketmq:5.3.4
+    container_name: luminova-rmqbroker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      - NAMESRV_ADDR=rmqnamesrv:9876
+    volumes:
+      - ./docker/rocketmq/broker.conf:/home/rocketmq/conf/broker.conf
+      - rocketmq-broker-store:/home/rocketmq/store
+      - rocketmq-broker-logs:/home/rocketmq/logs
+    networks:
+      - luminova-net
+    depends_on:
+      rmqnamesrv:
+        condition: service_healthy
+    command: sh mqbroker -c /home/rocketmq/conf/broker.conf
+    restart: unless-stopped
+
+  rmqproxy:
+    image: apache/rocketmq:5.3.4
+    container_name: luminova-rmqproxy
+    ports:
+      - "8080:8080"
+      - "${ROCKETMQ_PROXY_PORT:-8081}:8081"
+    environment:
+      - NAMESRV_ADDR=rmqnamesrv:9876
+    networks:
+      - luminova-net
+    depends_on:
+      - rmqbroker
+    command: sh mqproxy
+    restart: on-failure
+
+  rmqdashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: luminova-rmqdashboard
+    ports:
+      - "${ROCKETMQ_DASHBOARD_PORT:-28080}:8080"
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+    networks:
+      - luminova-net
+    depends_on:
+      rmqnamesrv:
+        condition: service_healthy
+    restart: unless-stopped
+
+  sentinel-dashboard:
+    image: bladex/sentinel-dashboard:1.8.8
+    container_name: luminova-sentinel
+    ports:
+      - "${SENTINEL_PORT:-8858}:8858"
+    environment:
+      - SERVER_PORT=8858
+      - AUTH_USERNAME=${SENTINEL_USERNAME:-sentinel}
+      - AUTH_PASSWORD=${SENTINEL_PASSWORD:-sentinel}
+    networks:
+      - luminova-net
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: luminova-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms512m -Xmx512m}"
+    ports:
+      - "${ES_PORT:-9200}:9200"
+      - "${ES_TRANSPORT_PORT:-9300}:9300"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - luminova-net
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: luminova-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "${KIBANA_PORT:-5601}:5601"
+    networks:
+      - luminova-net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: luminova-rustfs
+    environment:
+      - RUSTFS_VOLUMES=/data
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9001
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY:-rustfsadmin123}
+    ports:
+      - "${RUSTFS_API_PORT:-9000}:9000"
+      - "${RUSTFS_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - rustfs-data:/data
+    networks:
+      - luminova-net
+    restart: unless-stopped
+
+networks:
+  luminova-net:
+    driver: bridge
 
 volumes:
   nacos-data:
   nacos-logs:
+  postgres-data:
+  mysql-data:
+  redis-data:
+  rocketmq-namesrv-logs:
+  rocketmq-broker-store:
+  rocketmq-broker-logs:
+  es-data:
+  rustfs-data:
