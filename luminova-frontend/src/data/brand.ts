@@ -1,7 +1,6 @@
-import logoMark from '../assets/brand/luminova-mark.png';
-import logoMarkDark from '../assets/brand/luminova-mark-dark.png';
+const logoMark = '/brand/luminova-mark.png';
 
 export const brandAssets = {
   logoMark,
-  logoMarkDark,
+  logoMarkDark: logoMark,
 } as const;

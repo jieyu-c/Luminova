@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+      discovery:
+        enabled: ${NACOS_DISCOVERY_ENABLED:true}
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:nacos}
+        ip: ${NACOS_DISCOVERY_IP:127.0.0.1}
+        namespace: ${NACOS_NAMESPACE:public}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        fail-fast: ${NACOS_DISCOVERY_FAIL_FAST:false}
+        failure-tolerance-enabled: ${NACOS_DISCOVERY_FAILURE_TOLERANCE_ENABLED:true}
+        register-enabled: ${NACOS_DISCOVERY_REGISTER_ENABLED:true}
+      config:
+        enabled: ${NACOS_CONFIG_ENABLED:true}
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:nacos}
+        namespace: ${NACOS_NAMESPACE:public}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        file-extension: yaml
+        timeout: ${NACOS_CONFIG_TIMEOUT:1000}
+        max-retry: ${NACOS_CONFIG_MAX_RETRY:1}
+        config-retry-time: ${NACOS_CONFIG_RETRY_TIME:1000}

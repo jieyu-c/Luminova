@@ -1,3 +1,30 @@
+server:
+  port: ${SERVER_PORT:8082}
+
 spring:
+  config:
+    import:
+      - classpath:luminova/nacos.yaml
+      - classpath:luminova/cache.yaml
+      - classpath:luminova/datasource-postgresql.yaml
+      - classpath:luminova/dubbo.yaml
   application:
     name: luminova-user
+
+dubbo:
+  protocol:
+    port: ${DUBBO_PORT:20882}
+
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  is-read-header: true
+  is-read-body: false
+  is-read-cookie: false
+
+luminova:
+  user:
+    verify-code:
+      expose: true
+      mock-enabled: true
+      mock-code: "888888"

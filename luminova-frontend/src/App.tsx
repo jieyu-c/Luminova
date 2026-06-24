@@ -4,7 +4,9 @@ import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { CanvasPage } from './pages/CanvasPage';
+import { AccountPage } from './pages/AccountPage';
 import { WorkspacePage } from './pages/WorkspacePage';
+import { AgentPage } from './pages/AgentPage';
 
 function App() {
   return (
@@ -29,9 +31,11 @@ function App() {
               </div>
             }
           />
+          <Route path="/agent" element={<AgentPage />} />
           <Route path="/canvas" element={<CanvasPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/account" element={<AccountPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

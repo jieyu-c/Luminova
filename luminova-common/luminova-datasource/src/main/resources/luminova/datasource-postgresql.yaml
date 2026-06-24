@@ -1,0 +1,10 @@
+luminova:
+  datasource:
+    type: postgresql
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES_URL:jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:luminova}}
+    username: ${POSTGRES_USER:luminova}
+    password: ${POSTGRES_PASSWORD:luminova123}

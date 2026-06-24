@@ -1,0 +1,49 @@
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:luminova123}
+      database: ${REDIS_DATABASE:0}
+      ssl:
+        enabled: ${REDIS_SSL_ENABLED:false}
+  redis:
+    redisson:
+      config: |
+        singleServerConfig:
+          idleConnectionTimeout: 10000
+          connectTimeout: 10000
+          timeout: 3000
+          retryAttempts: 3
+          retryInterval: 1500
+          password: ${REDIS_PASSWORD:luminova123}
+          subscriptionsPerConnection: 5
+          clientName: null
+          address: "${REDIS_PROTOCOL:redis}://${REDIS_HOST:localhost}:${REDIS_PORT:6379}"
+          subscriptionConnectionMinimumIdleSize: 1
+          subscriptionConnectionPoolSize: 50
+          connectionMinimumIdleSize: 24
+          connectionPoolSize: 64
+          database: ${REDIS_DATABASE:0}
+          dnsMonitoringInterval: 5000
+        threads: 16
+        nettyThreads: 32
+        codec: !<org.redisson.client.codec.StringCodec> {}
+        transportMode: "NIO"
+
+jetcache:
+  statIntervalMinutes: 1
+  areaInCacheName: false
+  local:
+    default:
+      type: caffeine
+      keyConvertor: fastjson2
+  remote:
+    default:
+      type: redisson
+      keyConvertor: fastjson2
+      broadcastChannel: ${spring.application.name:luminova}
+      keyPrefix: ${spring.application.name:luminova}
+      valueEncoder: java
+      valueDecoder: java
+      defaultExpireInMillis: ${JETCACHE_DEFAULT_EXPIRE_IN_MILLIS:5000}

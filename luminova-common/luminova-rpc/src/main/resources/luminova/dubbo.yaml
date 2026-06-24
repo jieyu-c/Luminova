@@ -1,0 +1,16 @@
+dubbo:
+  application:
+    name: ${DUBBO_APPLICATION_NAME:${spring.application.name}-rpc}
+    qos-enable: false
+  registry:
+    address: nacos://${NACOS_SERVER_ADDR:127.0.0.1:8848}
+    username: ${NACOS_USERNAME:nacos}
+    password: ${NACOS_PASSWORD:nacos}
+    group: ${DUBBO_NACOS_GROUP:DUBBO_GROUP}
+    parameters:
+      namespace: ${NACOS_NAMESPACE:public}
+  protocol:
+    name: dubbo
+    port: ${DUBBO_PORT:-1}
+  consumer:
+    timeout: ${DUBBO_CONSUMER_TIMEOUT:5000}

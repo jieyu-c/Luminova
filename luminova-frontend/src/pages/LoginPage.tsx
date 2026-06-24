@@ -21,15 +21,22 @@ export function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { account: '', password: '' },
+    defaultValues: { phone: '', password: '' },
   });
 
   const onSubmit = async (data: LoginFormData) => {
     setServerError('');
     try {
       const response = await login(data);
-      setAuth(response.token);
-      navigate('/');
+      if (!response.token || !response.userId) {
+        throw new ApiError('登录失败，请稍后重试', 200);
+      }
+      setAuth(response.token, {
+        userId: response.userId,
+        username: response.username,
+        avatarUrl: response.avatarUrl ?? null,
+      });
+      navigate('/agent');
     } catch (err) {
       setServerError(
         err instanceof ApiError ? err.message : '登录失败，请稍后重试',
@@ -71,21 +78,23 @@ export function LoginPage() {
         <section className="auth-form-panel">
           <div className="auth-form-head">
             <h2>账号登录</h2>
-            <p>使用账号和密码登录你的账户</p>
+            <p>使用手机号和密码登录你的账户</p>
           </div>
 
           <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
-            <div className={`field${errors.account ? ' has-error' : ''}`}>
-              <label htmlFor="account">账号</label>
+            <div className={`field${errors.phone ? ' has-error' : ''}`}>
+              <label htmlFor="phone">手机号</label>
               <input
-                id="account"
-                type="text"
-                autoComplete="username"
-                placeholder="请输入账号"
-                {...register('account')}
+                id="phone"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
+                placeholder="请输入 11 位手机号"
+                maxLength={11}
+                {...register('phone')}
               />
-              {errors.account && (
-                <span className="field-error">{errors.account.message}</span>
+              {errors.phone && (
+                <span className="field-error">{errors.phone.message}</span>
               )}
             </div>
 

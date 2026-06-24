@@ -1,22 +1,15 @@
-import { mockLogin } from '../auth/mock';
 import { apiFetch } from './client';
-import type { LoginFormData, RegisterFormData } from '../validations/auth';
+import type { LoginResponse } from './types';
 
-export type AuthResponse = {
-  token: string;
-  user?: {
-    id: string;
-    phone: string;
-  };
+export type LoginPayload = {
+  phone: string;
+  password: string;
 };
 
-export function login(data: LoginFormData) {
-  return mockLogin(data.account, data.password);
-}
-
-export function register(data: Omit<RegisterFormData, 'confirmPassword'>) {
-  return apiFetch<AuthResponse>('/api/v1/auth/register', {
+export function login(data: LoginPayload) {
+  return apiFetch<LoginResponse>('/api/v1/auth/login', {
     method: 'POST',
     body: JSON.stringify(data),
+    skipAuth: true,
   });
 }
