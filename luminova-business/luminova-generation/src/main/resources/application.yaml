@@ -1,0 +1,10 @@
+server:
+  port: ${SERVER_PORT:8084}
+
+spring:
+  config:
+    import:
+      - classpath:luminova/nacos.yaml
+      - classpath:luminova/datasource-postgresql.yaml
+  application:
+    name: luminova-generation

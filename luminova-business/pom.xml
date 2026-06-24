@@ -16,5 +16,7 @@
     <modules>
         <module>luminova-user</module>
         <module>luminova-sms</module>
+        <module>luminova-canvas</module>
+        <module>luminova-generation</module>
     </modules>
 </project>

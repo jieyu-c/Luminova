@@ -1,0 +1,17 @@
+server:
+  port: ${SERVER_PORT:8083}
+
+spring:
+  config:
+    import:
+      - classpath:luminova/nacos.yaml
+      - classpath:luminova/datasource-postgresql.yaml
+  application:
+    name: luminova-canvas
+
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  is-read-header: true
+  is-read-body: false
+  is-read-cookie: false
