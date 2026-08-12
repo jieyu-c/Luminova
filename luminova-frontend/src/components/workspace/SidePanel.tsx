@@ -1,8 +1,65 @@
 import type { CSSProperties } from 'react';
-import { ArrowRight, Lightbulb } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Clapperboard, FileVideo, Lightbulb, MessageSquareText, PanelsTopLeft } from 'lucide-react';
 import { agentSuggestion, missingAssets, recommendedTemplates } from '../../data/workspace';
 
-export function SidePanel() {
+const starterTemplates = [
+  { id: 'ad-30', title: '30 秒广告', detail: '产品卖点 · 品牌展示 · 快节奏', icon: FileVideo },
+  { id: 'drama-ep1', title: '短剧第一集', detail: '剧情驱动 · 角色塑造 · 钩子完整', icon: Clapperboard },
+  { id: 'comic-shot', title: '漫剧分镜', detail: '分镜预演 · 节奏把控 · 视觉风格', icon: PanelsTopLeft },
+  { id: 'talking-head', title: '口播脚本', detail: '真人出镜 · 信息传达 · 专业表达', icon: MessageSquareText },
+];
+
+const creationPrep = ['写一句创意', '选择视频类型', '确认画幅和时长'];
+
+export function SidePanel({ hasProjects = true }: { hasProjects?: boolean }) {
+  if (!hasProjects) {
+    return (
+      <aside className="side-panel" aria-label="首次创作辅助信息">
+        <section className="side-block">
+          <div className="side-block__head side-block__head--split">
+            <h2>推荐起步模板</h2>
+            <button className="section-link" type="button">
+              更多模板
+              <ArrowRight size={14} aria-hidden="true" />
+            </button>
+          </div>
+          <ul className="starter-template-list">
+            {starterTemplates.map((template) => {
+              const Icon = template.icon;
+
+              return (
+                <li key={template.id}>
+                  <span className="starter-template-list__icon" aria-hidden="true">
+                    <Icon size={17} />
+                  </span>
+                  <div>
+                    <b>{template.title}</b>
+                    <p>{template.detail}</p>
+                  </div>
+                  <ArrowRight size={15} aria-hidden="true" />
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <section className="side-block">
+          <div className="side-block__head">
+            <h2>创作准备</h2>
+          </div>
+          <ul className="creation-prep-list">
+            {creationPrep.map((item) => (
+              <li key={item}>
+                <CheckCircle2 size={16} aria-hidden="true" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </aside>
+    );
+  }
+
   return (
     <aside className="side-panel" aria-label="工作台辅助信息">
       <section className="side-block">

@@ -20,9 +20,6 @@ public class CanvasEdgePO extends SoftDeletablePO {
     private String edgeKey;
     private Long sourceNodeId;
     private Long targetNodeId;
-    private String sourceHandle;
-    private String targetHandle;
-    private String edgeType;
     private String label;
     @TableField(typeHandler = JsonbTypeHandler.class)
     private JsonNode config;

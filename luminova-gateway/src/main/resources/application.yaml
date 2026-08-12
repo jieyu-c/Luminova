@@ -37,3 +37,7 @@ spring:
               uri: lb://luminova-user
               predicates:
                 - Path=/api/v1/user/**
+            - id: luminova-canvas
+              uri: lb://luminova-canvas
+              predicates:
+                - Path=/api/v1/canvas/**,/api/v1/projects,/api/v1/projects/**

@@ -5,9 +5,15 @@ spring:
   config:
     import:
       - classpath:luminova/nacos.yaml
+      - classpath:luminova/cache.yaml
       - classpath:luminova/datasource-postgresql.yaml
+      - classpath:luminova/dubbo.yaml
   application:
     name: luminova-canvas
+
+dubbo:
+  protocol:
+    port: ${DUBBO_PORT:20883}
 
 sa-token:
   token-name: Authorization

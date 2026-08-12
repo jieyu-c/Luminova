@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { AccountModal } from './account/AccountModal';
+import { AuthModal, type AuthMode } from './auth/AuthModal';
 import { UserAvatar } from './account/UserAvatar';
 import { brandAssets } from '../data/brand';
 import { useAuth } from '../contexts/AuthContext';
@@ -74,10 +75,42 @@ function ShellAccountButton({ onOpen }: { onOpen: () => void }) {
 export function Header() {
   const { isAuthenticated } = useAuth();
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>('login');
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authRedirectPath, setAuthRedirectPath] = useState<string | null>(null);
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const isAgent = pathname === '/agent';
   const isWorkspace = pathname === '/workspace';
+
+  const openAuth = (mode: AuthMode, redirectPath?: string) => {
+    setAuthMode(mode);
+    setAuthRedirectPath(redirectPath ?? null);
+    setIsAuthOpen(true);
+  };
+
+  const closeAuth = () => {
+    setIsAuthOpen(false);
+    setAuthRedirectPath(null);
+  };
+
+  const handleAuthenticated = () => {
+    if (authRedirectPath) {
+      navigate(authRedirectPath);
+    }
+    setAuthRedirectPath(null);
+  };
+
+  const authModal = (
+    <AuthModal
+      open={isAuthOpen}
+      mode={authMode}
+      onModeChange={setAuthMode}
+      onClose={closeAuth}
+      onAuthenticated={handleAuthenticated}
+    />
+  );
 
   if (isHome) {
     return (
@@ -107,17 +140,18 @@ export function Header() {
               </>
             ) : (
               <>
-                <Link className="btn btn-quiet" to="/login">
+                <button className="btn btn-quiet" type="button" onClick={() => openAuth('login')}>
                   登录
-                </Link>
-                <Link className="btn btn-primary" to="/register">
+                </button>
+                <button className="btn btn-primary" type="button" onClick={() => openAuth('register')}>
                   注册
-                </Link>
+                </button>
               </>
             )}
           </div>
         </header>
         <AccountModal open={isAccountOpen} onClose={() => setIsAccountOpen(false)} />
+        {authModal}
       </>
     );
   }
@@ -134,15 +168,33 @@ export function Header() {
           </span>
         </Link>
         <nav className="nav" aria-label="主导航">
-          <Link className={cn(isAgent && 'active')} to={isAuthenticated ? '/agent' : '/login'}>
-            Agent
-          </Link>
-          <Link
-            className={cn(isWorkspace && 'active')}
-            to={isAuthenticated ? '/workspace' : '/login'}
-          >
-            工作空间
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link className={cn(isAgent && 'active')} to="/agent">
+                Agent
+              </Link>
+              <Link className={cn(isWorkspace && 'active')} to="/workspace">
+                工作空间
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                className={cn(isAgent && 'active')}
+                type="button"
+                onClick={() => openAuth('login', '/agent')}
+              >
+                Agent
+              </button>
+              <button
+                className={cn(isWorkspace && 'active')}
+                type="button"
+                onClick={() => openAuth('login', '/workspace')}
+              >
+                工作空间
+              </button>
+            </>
+          )}
         </nav>
         <div className="actions">
           {isAuthenticated && (isAgent || isWorkspace) ? (
@@ -162,17 +214,18 @@ export function Header() {
             </>
           ) : (
             <>
-              <Link className="btn" to="/login">
+              <button className="btn" type="button" onClick={() => openAuth('login')}>
                 登录
-              </Link>
-              <Link className="btn primary" to="/register">
+              </button>
+              <button className="btn primary" type="button" onClick={() => openAuth('register')}>
                 注册
-              </Link>
+              </button>
             </>
           )}
         </div>
       </header>
       <AccountModal open={isAccountOpen} onClose={() => setIsAccountOpen(false)} />
+      {authModal}
     </>
   );
 }

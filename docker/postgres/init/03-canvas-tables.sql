@@ -208,9 +208,6 @@ CREATE TABLE IF NOT EXISTS canvas_edge (
     edge_key VARCHAR(64) NOT NULL,
     source_node_id BIGINT NOT NULL,
     target_node_id BIGINT NOT NULL,
-    source_handle VARCHAR(64),
-    target_handle VARCHAR(64),
-    edge_type VARCHAR(32) NOT NULL DEFAULT 'DEFAULT',
     label VARCHAR(128),
     config JSONB NOT NULL DEFAULT '{}'::JSONB,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -222,11 +219,19 @@ CREATE TABLE IF NOT EXISTS canvas_edge (
         FOREIGN KEY (source_node_id) REFERENCES canvas_node (id) ON DELETE CASCADE,
     CONSTRAINT fk_canvas_edge_target
         FOREIGN KEY (target_node_id) REFERENCES canvas_node (id) ON DELETE CASCADE,
-    CONSTRAINT chk_canvas_edge_type
-        CHECK (edge_type IN ('DEFAULT', 'REFERENCE', 'SEQUENCE', 'CONSTRAINT')),
     CONSTRAINT chk_canvas_edge_self
         CHECK (source_node_id <> target_node_id)
 );
+
+-- 兼容已执行过早期画布脚本的开发库。
+ALTER TABLE canvas_edge
+    DROP COLUMN IF EXISTS source_handle;
+
+ALTER TABLE canvas_edge
+    DROP COLUMN IF EXISTS target_handle;
+
+ALTER TABLE canvas_edge
+    DROP COLUMN IF EXISTS edge_type;
 
 CREATE UNIQUE INDEX IF NOT EXISTS uk_canvas_edge_key_alive
     ON canvas_edge (canvas_id, edge_key)

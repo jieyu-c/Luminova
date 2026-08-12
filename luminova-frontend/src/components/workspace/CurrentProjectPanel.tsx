@@ -1,5 +1,5 @@
-import { MoreHorizontal, Settings2 } from 'lucide-react';
-import { currentProject, projectTasks, workflowSteps } from '../../data/workspace';
+import { CheckCircle2, MoreHorizontal, Settings2, Sparkles } from 'lucide-react';
+import { projectTasks, workflowSteps, type TableProject } from '../../data/workspace';
 import { cn } from '../../lib/cn';
 
 const taskStatusClass: Record<(typeof projectTasks)[number]['status'], string> = {
@@ -8,13 +8,53 @@ const taskStatusClass: Record<(typeof projectTasks)[number]['status'], string> =
   'pending-review': 'task-status--review',
 };
 
-export function CurrentProjectPanel() {
+type CurrentProjectPanelProps = {
+  project: TableProject | null;
+};
+
+export function CurrentProjectPanel({ project }: CurrentProjectPanelProps) {
+  if (!project) {
+    return (
+      <section className="current-project current-project--empty" aria-label="首次创作流程">
+        <div className="section-head">
+          <div>
+            <h2>
+              当前项目 <span>/ 等待创建</span>
+            </h2>
+          </div>
+        </div>
+        <div className="current-project-empty">
+          <div>
+            <span className="eyebrow">Creation Path</span>
+            <h3>创建后，这里会变成你的项目控制台</h3>
+            <p>
+              Luminova 会把创意拆成可编辑节点，你可以逐步确认剧本、角色、场景、分镜和 Prompt。
+            </p>
+          </div>
+          <ol className="first-run-flow" aria-label="首次创作流程">
+            {['输入创意', '生成 Canvas', '调整节点', '确认 Prompt', '导出视频'].map((step, index) => (
+              <li key={step}>
+                <span>{index + 1}</span>
+                <b>{step}</b>
+                {index === 0 ? <CheckCircle2 size={15} aria-hidden="true" /> : null}
+              </li>
+            ))}
+          </ol>
+          <a className="btn btn-outline current-project-empty__cta" href="#workspace-ai-dock">
+            <Sparkles size={15} aria-hidden="true" />
+            去创建第一个项目
+          </a>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="current-project" aria-label="当前项目">
       <div className="section-head">
         <div>
           <h2>
-            当前项目 <span>/ {currentProject.title}</span>
+            当前项目 <span>/ {project?.title ?? '等待创建'}</span>
           </h2>
         </div>
         <div className="section-head__actions">

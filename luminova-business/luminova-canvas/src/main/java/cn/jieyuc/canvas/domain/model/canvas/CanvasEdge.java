@@ -19,9 +19,6 @@ public class CanvasEdge implements Serializable {
     private String edgeKey;
     private CanvasNodeId sourceNodeId;
     private CanvasNodeId targetNodeId;
-    private String sourceHandle;
-    private String targetHandle;
-    private CanvasEdgeType edgeType;
     private String label;
     @Builder.Default
     private Map<String, Object> config = new LinkedHashMap<>();
@@ -33,8 +30,7 @@ public class CanvasEdge implements Serializable {
             CanvasId canvasId,
             String edgeKey,
             CanvasNodeId sourceNodeId,
-            CanvasNodeId targetNodeId,
-            CanvasEdgeType edgeType
+            CanvasNodeId targetNodeId
     ) {
         if (canvasId == null || sourceNodeId == null || targetNodeId == null) {
             throw new IllegalArgumentException("Canvas and edge node ids must not be null");
@@ -50,7 +46,6 @@ public class CanvasEdge implements Serializable {
                 .edgeKey(edgeKey.trim())
                 .sourceNodeId(sourceNodeId)
                 .targetNodeId(targetNodeId)
-                .edgeType(edgeType == null ? CanvasEdgeType.DEFAULT : edgeType)
                 .build();
     }
 }

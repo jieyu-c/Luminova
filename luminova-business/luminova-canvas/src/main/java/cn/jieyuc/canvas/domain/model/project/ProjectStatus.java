@@ -27,4 +27,11 @@ public enum ProjectStatus {
         }
         throw new IllegalArgumentException("Unknown project status: " + code);
     }
+
+    public static ProjectStatus ofName(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return ProjectStatus.valueOf(value.trim());
+    }
 }

@@ -1,29 +1,43 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { tableProjects } from '../../data/workspace';
+import { ArrowRight, FolderPlus, RefreshCw } from 'lucide-react';
+import type { ProjectStatus, TableProject } from '../../data/workspace';
 import { useStudioTransition } from '../../lib/useStudioTransition';
 import { cn } from '../../lib/cn';
 
-const statusClass: Record<(typeof tableProjects)[number]['status'], string> = {
+const statusClass: Record<ProjectStatus, string> = {
   进行中: 'project-status--active',
   待审核: 'project-status--review',
   已完成: 'project-status--done',
   草稿: 'project-status--draft',
 };
 
-export function ProjectsPanel() {
+type ProjectsPanelProps = {
+  projects: TableProject[];
+  isLoading: boolean;
+  error: string | null;
+  onRetry: () => void;
+};
+
+export function ProjectsPanel({ projects, isLoading, error, onRetry }: ProjectsPanelProps) {
   const { enterStudio, captureTransition } = useStudioTransition();
 
   return (
     <section className="recent-projects" aria-label="最近项目">
       <div className="section-head">
         <h2>最近项目</h2>
-        <Link className="section-link" to="/workspace">
-          查看全部项目
-          <ArrowRight size={14} aria-hidden="true" />
-        </Link>
+        <button className="section-link" type="button" onClick={onRetry} disabled={isLoading}>
+          <RefreshCw size={14} aria-hidden="true" />
+          刷新
+        </button>
       </div>
+
+      {error ? (
+        <div className="workspace-message workspace-message--error">
+          <span>{error}</span>
+          <button type="button" onClick={onRetry}>重试</button>
+        </div>
+      ) : null}
 
       <div className="project-table-wrap">
         <table className="project-table">
@@ -41,7 +55,30 @@ export function ProjectsPanel() {
             </tr>
           </thead>
           <tbody>
-            {tableProjects.map((project) => {
+            {isLoading ? (
+              <tr>
+                <td colSpan={8} className="project-table__empty">
+                  正在加载项目...
+                </td>
+              </tr>
+            ) : null}
+
+            {!isLoading && projects.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="project-table__empty">
+                  <div className="project-empty-state">
+                    <FolderPlus size={30} aria-hidden="true" />
+                    <b>暂无项目</b>
+                    <p>创建后，你的广告、短剧、漫剧和口播项目会出现在这里。</p>
+                    <a className="btn btn-outline btn-sm" href="#workspace-ai-dock">
+                      创建项目
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            ) : null}
+
+            {!isLoading && projects.map((project) => {
               const canvasUrl = `/canvas?studio=${project.id}&enter=1`;
 
               return (

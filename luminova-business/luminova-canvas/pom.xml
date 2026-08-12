@@ -23,6 +23,12 @@
 
         <dependency>
             <groupId>cn.jieyuc</groupId>
+            <artifactId>luminova-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.jieyuc</groupId>
             <artifactId>luminova-web</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -36,6 +42,18 @@
         <dependency>
             <groupId>cn.jieyuc</groupId>
             <artifactId>luminova-sa-token</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.jieyuc</groupId>
+            <artifactId>luminova-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.jieyuc</groupId>
+            <artifactId>luminova-rpc</artifactId>
             <version>${project.version}</version>
         </dependency>
 

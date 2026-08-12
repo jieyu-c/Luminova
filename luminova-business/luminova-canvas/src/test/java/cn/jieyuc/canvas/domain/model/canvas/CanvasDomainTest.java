@@ -19,8 +19,7 @@ class CanvasDomainTest {
                         CanvasId.of(1L),
                         "self-edge",
                         nodeId,
-                        nodeId,
-                        CanvasEdgeType.DEFAULT
+                        nodeId
                 )
         );
     }
