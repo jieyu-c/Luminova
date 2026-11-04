@@ -21,10 +21,3 @@ sa-token:
   is-read-header: true
   is-read-body: false
   is-read-cookie: false
-
-luminova:
-  user:
-    verify-code:
-      expose: true
-      mock-enabled: true
-      mock-code: "888888"
