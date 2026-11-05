@@ -38,7 +38,9 @@ public class JdbcSecurityAuditRepository implements SecurityAuditRepository {
     }
 
     private String validIp(String value) {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
         try {
             InetAddress.getByName(value);
             return value;

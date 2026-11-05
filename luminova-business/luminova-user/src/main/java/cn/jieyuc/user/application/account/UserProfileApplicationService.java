@@ -2,6 +2,7 @@ package cn.jieyuc.user.application.account;
 
 import cn.jieyuc.luminova.base.exceptions.BizException;
 import cn.jieyuc.user.application.port.AuthenticatedUserProvider;
+import cn.jieyuc.user.domain.account.LoginIdentity;
 import cn.jieyuc.user.domain.account.UserAccount;
 import cn.jieyuc.user.domain.account.UserAccountRepository;
 import cn.jieyuc.user.domain.account.UserId;
@@ -54,7 +55,7 @@ public class UserProfileApplicationService {
     private UserProfileView toView(UserAccount account) {
         String maskedPhone = account.identities().stream()
                 .filter(identity -> identity.key().type().name().equals("PHONE"))
-                .findFirst().map(identity -> identity.maskedIdentifier()).orElse(null);
+                .findFirst().map(LoginIdentity::maskedIdentifier).orElse(null);
         return new UserProfileView(account.id().value(), maskedPhone, account.nickname(),
                 account.avatarUrl(), account.role().name(), account.status().name(), account.createdAt());
     }

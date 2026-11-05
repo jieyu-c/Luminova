@@ -2,12 +2,19 @@ package cn.jieyuc.luminovasatoken.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Sa-Token 接入配置。
+ *
+ * <p>{@code enabled} 使用基本类型，Lombok 生成 {@code isEnabled()}，与配置绑定约定一致。</p>
+ */
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "luminova.sa-token")
 public class LuminovaSaTokenProperties {
-
     private boolean enabled = true;
 
     private List<String> includePaths = new ArrayList<>(List.of("/**"));
@@ -24,28 +31,4 @@ public class LuminovaSaTokenProperties {
             "/error",
             "/actuator/**"
     ));
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public List<String> getIncludePaths() {
-        return includePaths;
-    }
-
-    public void setIncludePaths(List<String> includePaths) {
-        this.includePaths = includePaths;
-    }
-
-    public List<String> getExcludePaths() {
-        return excludePaths;
-    }
-
-    public void setExcludePaths(List<String> excludePaths) {
-        this.excludePaths = excludePaths;
-    }
 }

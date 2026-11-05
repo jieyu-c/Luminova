@@ -27,11 +27,21 @@ public final class LoginIdentity {
         this.passwordCredential = passwordCredential;
     }
 
-    public long id() { return id; }
-    public IdentityKey key() { return key; }
-    public String maskedIdentifier() { return maskedIdentifier; }
-    public OffsetDateTime verifiedAt() { return verifiedAt; }
-    public PasswordCredential passwordCredential() { return passwordCredential; }
+    public long id() {
+        return id;
+    }
+    public IdentityKey key() {
+        return key;
+    }
+    public String maskedIdentifier() {
+        return maskedIdentifier;
+    }
+    public OffsetDateTime verifiedAt() {
+        return verifiedAt;
+    }
+    public PasswordCredential passwordCredential() {
+        return passwordCredential;
+    }
 
     /**
      * 替换本地密码凭证。

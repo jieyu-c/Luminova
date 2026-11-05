@@ -137,14 +137,34 @@ public final class UserAccount {
         return nickname.trim();
     }
 
-    public UserId id() { return id; }
-    public String nickname() { return nickname; }
-    public String avatarUrl() { return avatarUrl; }
-    public Role role() { return role; }
-    public AccountStatus status() { return status; }
-    public OffsetDateTime lastLoginAt() { return lastLoginAt; }
-    public OffsetDateTime createdAt() { return createdAt; }
-    public OffsetDateTime updatedAt() { return updatedAt; }
-    public int version() { return version; }
-    public List<LoginIdentity> identities() { return Collections.unmodifiableList(identities); }
+    public UserId id() {
+        return id;
+    }
+    public String nickname() {
+        return nickname;
+    }
+    public String avatarUrl() {
+        return avatarUrl;
+    }
+    public Role role() {
+        return role;
+    }
+    public AccountStatus status() {
+        return status;
+    }
+    public OffsetDateTime lastLoginAt() {
+        return lastLoginAt;
+    }
+    public OffsetDateTime createdAt() {
+        return createdAt;
+    }
+    public OffsetDateTime updatedAt() {
+        return updatedAt;
+    }
+    public int version() {
+        return version;
+    }
+    public List<LoginIdentity> identities() {
+        return Collections.unmodifiableList(identities);
+    }
 }

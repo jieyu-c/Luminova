@@ -57,7 +57,9 @@ public class LoginApplicationService {
     }
 
     private String maskPhone(String value) {
-        if (value == null) return "unknown";
+        if (value == null) {
+            return "unknown";
+        }
         String local = value.replace("+86", "").replaceAll("\\D", "");
         return local.length() == 11
                 ? "+86" + local.substring(0, 3) + "****" + local.substring(7)
