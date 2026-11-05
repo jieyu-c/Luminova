@@ -21,3 +21,10 @@ sa-token:
   is-read-header: true
   is-read-body: false
   is-read-cookie: false
+
+luminova:
+  admin:
+    bootstrap:
+      enabled: ${LUMINOVA_ADMIN_BOOTSTRAP_ENABLED:false}
+      phone: ${LUMINOVA_ADMIN_BOOTSTRAP_PHONE:}
+      password: ${LUMINOVA_ADMIN_BOOTSTRAP_PASSWORD:}

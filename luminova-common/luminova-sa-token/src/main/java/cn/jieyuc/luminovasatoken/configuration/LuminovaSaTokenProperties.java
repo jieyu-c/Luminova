@@ -14,8 +14,11 @@ public class LuminovaSaTokenProperties {
 
     private List<String> excludePaths = new ArrayList<>(List.of(
             "/api/v1/auth/login",
+            "/api/v1/auth/login/password",
             "/api/v1/auth/logout",
             "/api/v1/auth/register",
+            "/api/v1/auth/verification-codes",
+            "/api/v1/auth/password/reset",
             "/api/v1/user/register",
             "/api/v1/user/verify-code/send",
             "/error",

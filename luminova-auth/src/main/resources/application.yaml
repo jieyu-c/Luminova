@@ -17,3 +17,8 @@ sa-token:
   is-read-header: true
   is-read-body: false
   is-read-cookie: false
+
+luminova:
+  security:
+    # 生产环境必须通过部署密钥覆盖；该开发默认值不能用于公网环境。
+    hmac-secret: ${LUMINOVA_HMAC_SECRET:development-only-change-me}

@@ -5,6 +5,10 @@ target/
 !**/src/test/**/target/
 .kotlin
 docs
+# 开发规范必须随仓库版本化；其余 docs 文件继续沿用现有忽略策略。
+!docs/
+docs/*
+!docs/development-standards.md
 
 # idea dist
 .idea
