@@ -1,6 +1,6 @@
 package cn.jieyuc.luminovaauth.infrastructure.security;
 
-import cn.jieyuc.luminovaauth.application.security.SecureDigester;
+import cn.jieyuc.luminovaauth.application.port.security.SecureDigester;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

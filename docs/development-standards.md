@@ -75,7 +75,7 @@ Controller 应短小，通常只调用一个应用服务入口。若 Controller 
 - 按用例组织流程和事务边界。
 - 加载聚合、调用领域行为、保存聚合。
 - 协调跨上下文接口和外部端口。
-- 将领域结果转换为稳定的应用结果。
+- 将领域结果转换为稳定的应用结果。结构转换使用 MapStruct 的 Converter，不在用例里逐字段拷贝。
 - 安排事务提交后的外部副作用。
 
 不负责：
@@ -86,6 +86,8 @@ Controller 应短小，通常只调用一个应用服务入口。若 Controller 
 - 通过应用服务互相调用来复用简单逻辑。
 
 应用服务必须按具体用例命名，例如 `RegisterUserApplicationService`，禁止笼统的 `UserService`。
+
+应用端口接口放在 `application.port.<能力>`，例如 `application.port.login`。用例服务、策略实现、命令和结果留在 `application.<能力>`。端口包只放接口，不放 Spring 组件。领域仓储和领域 seam 仍放在 `domain`，它们的 Adapter 放在 `infrastructure`。
 
 ### 3.4 Domain 层
 
@@ -109,16 +111,18 @@ Controller 应短小，通常只调用一个应用服务入口。若 Controller 
 负责：
 
 - Repository、消息、缓存、RPC、文件存储和第三方 SDK 的 Adapter。
-- 领域对象与持久化 Entity 的转换。
+- 领域对象与持久化 Entity 的转换。结构转换使用 MapStruct 的 Converter，并走聚合或值对象构造器，不给聚合补 setter。类名以 `Converter` 结尾，不以 `Mapper` 结尾。规则见 [AGENTS.md](../AGENTS.md)。
 - 超时、重试、连接池、序列化和技术错误映射。
+- 数据库读写使用 MyBatis-Plus 的 `BaseMapper` 和 `LambdaQueryWrapper`，规则见 [AGENTS.md](../AGENTS.md)。
 
 不负责：
 
 - 决定业务是否合法。
 - 绕过聚合直接修改业务状态。
-- 把 MyBatis Wrapper、Redis key、供应商 DTO 泄漏到内层。
+- 把 MyBatis-Plus Wrapper、Redis key、供应商 DTO 泄漏到内层。
+- 让应用层、领域层或 Controller 直接调用 Mapper。
 
-Adapter 按技术和所实现的接口命名，例如 `MybatisUserAccountRepository`、`SaTokenSessionAdapter`。
+仓储实现按业务端口命名，放在 infrastructure，不得以 MyBatis 做前缀，例如 `UserAccountRepositoryAdapter`。框架配置类才使用技术名称，例如 `SaTokenSessionAdapter`。
 
 ## 4. 聚合、事务与跨上下文
 
@@ -148,6 +152,7 @@ Adapter 按技术和所实现的接口命名，例如 `MybatisUserAccountReposit
 - 领域 seam 使用能力名称，例如 `PasswordHasher`、`UserAccountRepository`。
 - 基础设施 Adapter 使用“技术 + 能力/接口”，例如 `BCryptPasswordHasher`。
 - DTO 必须带方向或用途，例如 `PasswordLoginRequest`、`LoginResponse`、`RegisterUserCommand`。
+- 结构转换器以 `Converter` 结尾，例如 `UserAccountPersistenceConverter`。`Mapper` 只留给数据库 `BaseMapper`，禁止把 MapStruct 转换器命名为 `UserAccountMapper`。
 - 禁止模糊名称：`CommonUtil`、`BaseManager`、`DataHelper`、`ProcessService`、`UserService`、`AuthService`。
 - 方法名称应表达业务行为，例如 `disable(...)`、`bindIdentity(...)`，避免 `updateStatus(...)` 之类弱语义操作。
 
@@ -158,6 +163,8 @@ Adapter 按技术和所实现的接口命名，例如 `MybatisUserAccountReposit
 - 新增或修改代码的注释统一使用中文；标准库名称、协议名称和代码标识符保留英文。
 - 注释必须准确描述当前实现。错误或过期注释与代码缺陷同等处理。
 - 注释解释职责、逻辑边界、业务不变量、设计原因和风险，不逐行翻译语法。
+- 不能只写类注释。公开方法，以及含有业务判断、事务、并发或安全取舍的私有方法，都要有方法注释。
+- 方法体内只在复杂逻辑处注释。普通方法调用和容易看懂的分支不添加注释。
 - 可读性优先依靠准确命名、短方法和值对象，注释用于解释代码不能直接表达的信息。
 
 ### 7.2 必须注释
@@ -168,6 +175,7 @@ Adapter 按技术和所实现的接口命名，例如 `MybatisUserAccountReposit
 - 应用服务、端口、仓储接口及 Adapter。
 - Controller、RPC Facade 和对外 DTO。
 - 所有 `public` 方法及跨模块接口方法。
+- 含有业务判断、事务边界、并发控制或安全取舍的私有方法。
 
 以下逻辑必须添加中文说明：
 
@@ -231,6 +239,7 @@ public void disable(UserId operatorId, DisableReason reason) {
 ### 7.5 禁止的注释
 
 - “获取用户名”“设置状态”“进入 if 判断”等逐行翻译代码的注释。
+- 给普通赋值、查询、转换或一眼能看懂的方法调用添加的注释。
 - 与实现不一致或保留被注释掉的旧代码。
 - 在注释中记录真实密码、验证码、Token、完整手机号、密钥或生产地址。
 - 用长篇注释掩盖超大类、含糊命名和错误分层。
@@ -263,6 +272,7 @@ public void disable(UserId operatorId, DisableReason reason) {
 - `interfaces..` 不依赖 Repository、Mapper 或具体 Adapter。
 - Controller 只依赖 application 和协议 DTO。
 - application 不依赖具体 infrastructure 实现。
+- 应用端口接口放在 `application.port..`，不与用例实现放在同一个包。
 - 聚合和领域对象不得被 Controller 直接返回。
 
 ### 9.3 测试可读性
@@ -292,10 +302,12 @@ public void disable(UserId operatorId, DisableReason reason) {
 - [ ] domain 没有依赖框架或基础设施。
 - [ ] 跨上下文契约没有泄漏 Entity、聚合或框架对象。
 - [ ] 关键模块的 Interface 足够小，复杂性被隐藏在实现中。
-- [ ] 关键类和公开方法具有准确的中文 Javadoc。
-- [ ] 并发、事务、安全和外部调用存在必要的中文说明。
-- [ ] 没有逐行翻译代码、失效或包含敏感信息的注释。
+- [ ] 关键类、公开方法，以及含有业务判断的私有方法具有准确的中文注释；不能只有类注释。
+- [ ] 方法体内只在复杂逻辑处说明原因。并发、事务、安全和外部调用存在必要的中文说明。
+- [ ] 没有逐行翻译代码、给易懂调用添加的噪声注释、失效注释或包含敏感信息的注释。
 - [ ] 新增和修改的行为有相称的自动化测试。
 - [ ] ArchUnit 和模块测试通过。
 - [ ] 相关 PRD、接口文档和 ADR（如有）已同步更新。
 - [ ] 后端 Java 代码块的 `{` 在行尾、`}` 单独成行。前端仍使用现有前端排版，未套用 Java 大括号规则。
+- [ ] 数据库读写使用 MyBatis-Plus，Mapper 与 Wrapper 没有泄漏到 domain、application 或 interfaces。仓储实现类名不带 MyBatis 前缀。
+- [ ] 领域对象与 Entity、应用视图、跨上下文契约之间的结构转换使用 MapStruct。转换器类名以 Converter 结尾，domain 不依赖 MapStruct，聚合没有为转换增加 setter。

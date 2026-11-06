@@ -7,8 +7,12 @@ import cn.jieyuc.luminova.api.account.PhonePasswordQuery;
 import cn.jieyuc.luminova.api.account.RegisterPhoneUserCommand;
 import cn.jieyuc.luminova.api.account.ResetPhonePasswordCommand;
 import cn.jieyuc.luminova.api.account.SecurityAuditCommand;
-import cn.jieyuc.luminovaauth.application.account.AccountGateway;
-import cn.jieyuc.luminovaauth.application.security.SecurityAuditRecorder;
+import cn.jieyuc.luminova.api.account.SecurityAuditEventType;
+import cn.jieyuc.luminova.api.account.SecurityAuditIdentityType;
+import cn.jieyuc.luminova.api.account.SecurityAuditResult;
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
+import cn.jieyuc.luminovaauth.application.port.account.AccountGateway;
+import cn.jieyuc.luminovaauth.application.port.security.SecurityAuditRecorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -44,14 +48,17 @@ public class DubboAccountGateway implements AccountGateway, SecurityAuditRecorde
     @Override
     public void loginSucceeded(long userId, String maskedIdentifier, String ip,
                                String userAgent, String requestId) {
-        recordSafely(new SecurityAuditCommand("LOGIN_SUCCESS", userId, userId, "PHONE",
-                maskedIdentifier, "SUCCESS", null, ip, userAgent, requestId));
+        recordSafely(new SecurityAuditCommand(SecurityAuditEventType.LOGIN_SUCCESS.code(), userId, userId,
+                SecurityAuditIdentityType.PHONE.code(), maskedIdentifier, SecurityAuditResult.SUCCESS.code(),
+                null, ip, userAgent, requestId));
     }
 
+    /** 记录登录失败。原因固定为凭证无效，不写入账号是否存在或是否停用。 */
     @Override
     public void loginFailed(String maskedIdentifier, String ip, String userAgent, String requestId) {
-        recordSafely(new SecurityAuditCommand("LOGIN_FAILURE", null, null, "PHONE",
-                maskedIdentifier, "FAILURE", "INVALID_CREDENTIALS", ip, userAgent, requestId));
+        recordSafely(new SecurityAuditCommand(SecurityAuditEventType.LOGIN_FAILURE.code(), null, null,
+                SecurityAuditIdentityType.PHONE.code(), maskedIdentifier, SecurityAuditResult.FAILURE.code(),
+                BizErrorCode.INVALID_CREDENTIALS.code(), ip, userAgent, requestId));
     }
 
     private void recordSafely(SecurityAuditCommand command) {

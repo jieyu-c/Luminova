@@ -1,6 +1,6 @@
 package cn.jieyuc.user.infrastructure.id;
 
-import cn.jieyuc.user.application.port.UserIdentifierGenerator;
+import cn.jieyuc.user.application.port.account.UserIdentifierGenerator;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import org.springframework.stereotype.Component;
 

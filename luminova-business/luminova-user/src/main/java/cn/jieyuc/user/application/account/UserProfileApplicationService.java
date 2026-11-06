@@ -1,7 +1,9 @@
 package cn.jieyuc.user.application.account;
 
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
 import cn.jieyuc.luminova.base.exceptions.BizException;
-import cn.jieyuc.user.application.port.AuthenticatedUserProvider;
+import cn.jieyuc.user.application.port.session.AuthenticatedUserProvider;
+import cn.jieyuc.user.domain.account.IdentityType;
 import cn.jieyuc.user.domain.account.LoginIdentity;
 import cn.jieyuc.user.domain.account.UserAccount;
 import cn.jieyuc.user.domain.account.UserAccountRepository;
@@ -21,11 +23,14 @@ import java.time.OffsetDateTime;
 public class UserProfileApplicationService {
     private final UserAccountRepository repository;
     private final AuthenticatedUserProvider authenticatedUserProvider;
+    private final UserProfileViewConverter profileConverter;
 
     public UserProfileApplicationService(UserAccountRepository repository,
-                                         AuthenticatedUserProvider authenticatedUserProvider) {
+                                         AuthenticatedUserProvider authenticatedUserProvider,
+                                         UserProfileViewConverter profileConverter) {
         this.repository = repository;
         this.authenticatedUserProvider = authenticatedUserProvider;
+        this.profileConverter = profileConverter;
     }
 
     /** 查询当前用户资料。 */
@@ -49,14 +54,13 @@ public class UserProfileApplicationService {
 
     private UserAccount loadCurrent() {
         return repository.findById(new UserId(authenticatedUserProvider.currentUserId()))
-                .orElseThrow(() -> new BizException("USER_NOT_FOUND", "用户不存在"));
+                .orElseThrow(() -> new BizException(BizErrorCode.USER_NOT_FOUND));
     }
 
     private UserProfileView toView(UserAccount account) {
         String maskedPhone = account.identities().stream()
-                .filter(identity -> identity.key().type().name().equals("PHONE"))
+                .filter(identity -> identity.key().type() == IdentityType.PHONE)
                 .findFirst().map(LoginIdentity::maskedIdentifier).orElse(null);
-        return new UserProfileView(account.id().value(), maskedPhone, account.nickname(),
-                account.avatarUrl(), account.role().name(), account.status().name(), account.createdAt());
+        return profileConverter.toView(account, maskedPhone);
     }
 }

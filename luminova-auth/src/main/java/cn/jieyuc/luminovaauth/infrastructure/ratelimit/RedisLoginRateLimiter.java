@@ -1,7 +1,8 @@
 package cn.jieyuc.luminovaauth.infrastructure.ratelimit;
 
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
 import cn.jieyuc.luminova.base.exceptions.BizException;
-import cn.jieyuc.luminovaauth.application.login.LoginRateLimiter;
+import cn.jieyuc.luminovaauth.application.port.login.LoginRateLimiter;
 import cn.jieyuc.luminovaauth.application.login.LoginType;
 import cn.jieyuc.luminovaauth.infrastructure.security.IdentifierDigester;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -30,15 +31,20 @@ public class RedisLoginRateLimiter implements LoginRateLimiter {
         this.digester = digester;
     }
 
+    /**
+     * 先限制来源 IP 的尝试次数，再拒绝已被连续失败锁定的身份。
+     *
+     * <p>两处对外都是限流，文案由不同错误码常量区分。</p>
+     */
     @Override
     public void checkAttempt(LoginType loginType, String identifier, String clientIp) {
         String ipKey = "auth:login:ip:" + digester.digest(clientIp == null ? "unknown" : clientIp);
         if (incrementWithTtl(ipKey, IP_WINDOW) > MAX_IP_ATTEMPTS) {
-            throw new BizException("RATE_LIMITED", "请求过于频繁，请稍后重试");
+            throw new BizException(BizErrorCode.RATE_LIMITED);
         }
         String failure = redisTemplate.opsForValue().get(failureKey(loginType, identifier));
         if (failure != null && Long.parseLong(failure) >= MAX_IDENTITY_FAILURES) {
-            throw new BizException("RATE_LIMITED", "登录尝试过多，请稍后重试");
+            throw new BizException(BizErrorCode.LOGIN_ATTEMPT_RATE_LIMITED);
         }
     }
 
@@ -52,6 +58,9 @@ public class RedisLoginRateLimiter implements LoginRateLimiter {
         incrementWithTtl(failureKey(loginType, identifier), FAILURE_WINDOW);
     }
 
+    /**
+     * 计数并在键首次出现时设置过期时间。后续递增不再刷新过期，否则窗口会被不断往后推。
+     */
     private long incrementWithTtl(String key, Duration ttl) {
         Long value = redisTemplate.opsForValue().increment(key);
         if (value != null && value == 1) {

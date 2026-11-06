@@ -1,7 +1,8 @@
 package cn.jieyuc.luminovaauth.infrastructure.verification;
 
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
 import cn.jieyuc.luminova.base.exceptions.BizException;
-import cn.jieyuc.luminovaauth.application.verification.VerificationCodeRateLimiter;
+import cn.jieyuc.luminovaauth.application.port.verification.VerificationCodeRateLimiter;
 import cn.jieyuc.luminovaauth.infrastructure.security.IdentifierDigester;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,9 @@ public class RedisVerificationCodeRateLimiter implements VerificationCodeRateLim
         this.digester = digester;
     }
 
+    /**
+     * 按手机号的分钟、小时、天窗口和 IP 的小时窗口依次计数。任一窗口超限即拒绝。
+     */
     @Override
     public void checkAndRecord(String normalizedPhone, String clientIp) {
         String phone = digester.digest(normalizedPhone);
@@ -34,13 +38,14 @@ public class RedisVerificationCodeRateLimiter implements VerificationCodeRateLim
         check("auth:otp:ip:hour:" + ip, Duration.ofHours(1), 20);
     }
 
+    /** 计数。只在键第一次出现时设置窗口，避免后续递增把过期时间不断延后。 */
     private void check(String key, Duration window, long limit) {
         Long value = redisTemplate.opsForValue().increment(key);
         if (value != null && value == 1) {
             redisTemplate.expire(key, window);
         }
         if (value != null && value > limit) {
-            throw new BizException("RATE_LIMITED", "验证码请求过于频繁，请稍后重试");
+            throw new BizException(BizErrorCode.VERIFICATION_CODE_RATE_LIMITED);
         }
     }
 }

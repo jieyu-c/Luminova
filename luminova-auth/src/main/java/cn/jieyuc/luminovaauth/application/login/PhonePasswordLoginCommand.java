@@ -1,5 +1,7 @@
 package cn.jieyuc.luminovaauth.application.login;
 
+import cn.jieyuc.luminovaauth.application.port.login.LoginCommand;
+
 /**
  * 手机号密码登录命令。
  *

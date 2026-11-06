@@ -1,5 +1,7 @@
 package cn.jieyuc.luminovaauth.application.session;
 
+import cn.jieyuc.luminovaauth.application.port.session.SessionIssuer;
+
 import org.springframework.stereotype.Service;
 
 /**

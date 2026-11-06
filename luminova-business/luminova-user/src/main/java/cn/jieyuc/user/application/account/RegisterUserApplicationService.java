@@ -1,6 +1,6 @@
 package cn.jieyuc.user.application.account;
 
-import cn.jieyuc.user.application.port.UserIdentifierGenerator;
+import cn.jieyuc.user.application.port.account.UserIdentifierGenerator;
 import cn.jieyuc.user.domain.account.PasswordCredential;
 import cn.jieyuc.user.domain.account.PasswordHasher;
 import cn.jieyuc.user.domain.account.PasswordPolicy;
@@ -8,6 +8,7 @@ import cn.jieyuc.user.domain.account.PhoneNumber;
 import cn.jieyuc.user.domain.account.UserAccount;
 import cn.jieyuc.user.domain.account.UserAccountRepository;
 import cn.jieyuc.user.domain.account.UserId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,10 @@ public class RegisterUserApplicationService {
     private final UserIdentifierGenerator identifierGenerator;
     private final Clock clock;
 
+    /**
+     * 容器只装配此构造器。密码策略和时钟在这里固定，避免选中测试构造器。
+     */
+    @Autowired
     public RegisterUserApplicationService(UserAccountRepository repository,
                                           PasswordHasher passwordHasher,
                                           UserIdentifierGenerator identifierGenerator) {

@@ -1,8 +1,8 @@
 package cn.jieyuc.user.infrastructure.session;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.jieyuc.user.application.port.AuthenticatedUserProvider;
-import cn.jieyuc.user.application.port.UserSessionRevoker;
+import cn.jieyuc.user.application.port.session.AuthenticatedUserProvider;
+import cn.jieyuc.user.application.port.session.UserSessionRevoker;
 import org.springframework.stereotype.Component;
 
 /**

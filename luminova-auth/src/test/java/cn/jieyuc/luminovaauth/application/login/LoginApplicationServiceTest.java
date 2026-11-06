@@ -1,9 +1,14 @@
 package cn.jieyuc.luminovaauth.application.login;
 
+import cn.jieyuc.luminovaauth.application.port.login.LoginRateLimiter;
+import cn.jieyuc.luminovaauth.application.port.login.LoginAuthenticator;
+
+import cn.jieyuc.luminova.api.account.AccountStatusCode;
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
 import cn.jieyuc.luminova.base.exceptions.BizException;
 import cn.jieyuc.luminovaauth.application.session.IssuedSession;
-import cn.jieyuc.luminovaauth.application.session.SessionIssuer;
-import cn.jieyuc.luminovaauth.application.security.SecurityAuditRecorder;
+import cn.jieyuc.luminovaauth.application.port.session.SessionIssuer;
+import cn.jieyuc.luminovaauth.application.port.security.SecurityAuditRecorder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +25,8 @@ class LoginApplicationServiceTest {
     @Test
     @DisplayName("任意登录策略成功后都应通过统一会话端口签发 userId 会话")
     void shouldIssueSessionAfterAuthentication() {
-        var authenticator = new FakeAuthenticator(new AuthenticatedPrincipal(10, 20, "USER", "ACTIVE"));
+        var authenticator = new FakeAuthenticator(new AuthenticatedPrincipal(
+                10, 20, "USER", AccountStatusCode.ACTIVE.code()));
         var registry = new LoginAuthenticatorRegistry(List.of(authenticator));
         var limiter = new FakeRateLimiter();
         var session = new FakeSessionIssuer();
@@ -44,7 +50,7 @@ class LoginApplicationServiceTest {
                 return PhonePasswordLoginCommand.class;
             }
             public AuthenticatedPrincipal authenticate(PhonePasswordLoginCommand command) {
-                throw new BizException("INVALID_CREDENTIALS", "手机号或密码错误");
+                throw new BizException(BizErrorCode.INVALID_CREDENTIALS);
             }
         };
         var limiter = new FakeRateLimiter();
@@ -53,7 +59,25 @@ class LoginApplicationServiceTest {
                 new LoginAuthenticatorRegistry(List.of(authenticator)), limiter, session,
                 new FakeAuditRecorder());
 
-        assertThrows(BizException.class, () -> service.login(command()));
+        BizException exception = assertThrows(BizException.class, () -> service.login(command()));
+        assertEquals(BizErrorCode.INVALID_CREDENTIALS.code(), exception.getCode());
+        assertEquals(0, session.issuedUserId);
+        assertEquals(1, limiter.failures);
+    }
+
+    @Test
+    @DisplayName("账号不是启用状态时按凭证无效处理，不签发会话")
+    void shouldRejectInactiveAccount() {
+        var authenticator = new FakeAuthenticator(new AuthenticatedPrincipal(
+                10, 20, "USER", AccountStatusCode.DISABLED.code()));
+        var limiter = new FakeRateLimiter();
+        var session = new FakeSessionIssuer();
+        var service = new LoginApplicationService(
+                new LoginAuthenticatorRegistry(List.of(authenticator)), limiter, session, new FakeAuditRecorder());
+
+        BizException exception = assertThrows(BizException.class, () -> service.login(command()));
+
+        assertEquals(BizErrorCode.INVALID_CREDENTIALS.code(), exception.getCode());
         assertEquals(0, session.issuedUserId);
         assertEquals(1, limiter.failures);
     }

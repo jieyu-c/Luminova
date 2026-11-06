@@ -4,7 +4,7 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.jieyuc.luminovaauth.application.login.AuthenticatedPrincipal;
 import cn.jieyuc.luminovaauth.application.session.IssuedSession;
-import cn.jieyuc.luminovaauth.application.session.SessionIssuer;
+import cn.jieyuc.luminovaauth.application.port.session.SessionIssuer;
 import org.springframework.stereotype.Component;
 
 /**

@@ -33,7 +33,7 @@ public class AdminBootstrapApplicationService {
     @Transactional
     public void initialize(String rawPhone, String rawPassword) {
         PhoneNumber phone = PhoneNumber.normalize(rawPhone);
-        IdentityKey key = new IdentityKey(IdentityType.PHONE, "LOCAL", phone.value());
+        IdentityKey key = new IdentityKey(IdentityType.PHONE, IdentityKey.LOCAL_PROVIDER, phone.value());
         UserAccount account = repository.findByIdentity(key)
                 .orElseGet(() -> registerService.registerPhone(phone.value(), rawPassword));
         if (account.role() != Role.ADMIN) {

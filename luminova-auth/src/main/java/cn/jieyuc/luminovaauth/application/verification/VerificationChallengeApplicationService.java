@@ -1,10 +1,15 @@
 package cn.jieyuc.luminovaauth.application.verification;
 
+import cn.jieyuc.luminovaauth.application.port.verification.VerificationCodeRateLimiter;
+import cn.jieyuc.luminovaauth.application.port.verification.SmsSender;
+
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
 import cn.jieyuc.luminova.base.exceptions.BizException;
 import cn.jieyuc.luminovaauth.domain.verification.VerificationChallenge;
 import cn.jieyuc.luminovaauth.domain.verification.VerificationChallengeRepository;
 import cn.jieyuc.luminovaauth.domain.verification.VerificationPurpose;
-import cn.jieyuc.luminovaauth.application.security.SecureDigester;
+import cn.jieyuc.luminovaauth.application.port.security.SecureDigester;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -31,6 +36,10 @@ public class VerificationChallengeApplicationService {
     private final SecureRandom random;
     private final Clock clock;
 
+    /**
+     * 容器只装配此构造器。随机源和时钟在这里固定，避免选中测试构造器。
+     */
+    @Autowired
     public VerificationChallengeApplicationService(VerificationChallengeRepository repository,
                                                    VerificationCodeRateLimiter rateLimiter,
                                                    SmsSender smsSender,
@@ -82,7 +91,7 @@ public class VerificationChallengeApplicationService {
         String phoneDigest = digester.digest(normalized);
         String codeDigest = codeDigest(phoneDigest, purpose, requestId, code);
         if (!repository.consume(requestId, phoneDigest, codeDigest, purpose)) {
-            throw new BizException("VERIFICATION_CODE_INVALID", "验证码无效或已过期");
+            throw new BizException(BizErrorCode.VERIFICATION_CODE_INVALID);
         }
     }
 

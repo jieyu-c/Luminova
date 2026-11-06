@@ -50,7 +50,7 @@ public final class UserAccount {
                                        PasswordCredential credential, OffsetDateTime now) {
         LoginIdentity identity = new LoginIdentity(
                 identityId,
-                new IdentityKey(IdentityType.PHONE, "LOCAL", phone.value()),
+                new IdentityKey(IdentityType.PHONE, IdentityKey.LOCAL_PROVIDER, phone.value()),
                 phone.masked(),
                 now,
                 credential

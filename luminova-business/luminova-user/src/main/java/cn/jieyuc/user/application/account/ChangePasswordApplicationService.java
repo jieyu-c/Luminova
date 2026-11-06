@@ -1,8 +1,9 @@
 package cn.jieyuc.user.application.account;
 
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
 import cn.jieyuc.luminova.base.exceptions.BizException;
-import cn.jieyuc.user.application.port.AuthenticatedUserProvider;
-import cn.jieyuc.user.application.port.UserSessionRevoker;
+import cn.jieyuc.user.application.port.session.AuthenticatedUserProvider;
+import cn.jieyuc.user.application.port.session.UserSessionRevoker;
 import cn.jieyuc.user.domain.account.LoginIdentity;
 import cn.jieyuc.user.domain.account.PasswordCredential;
 import cn.jieyuc.user.domain.account.PasswordHasher;
@@ -41,22 +42,27 @@ public class ChangePasswordApplicationService {
         this.passwordHasher = passwordHasher;
     }
 
-    /** 修改当前用户密码并在提交后撤销全部会话。 */
+    /**
+     * 修改当前用户密码，并在事务提交后撤销全部会话。
+     *
+     * <p>先校验旧密码，再拒绝与当前哈希相同的新密码。会话撤销放在提交之后，
+     * 避免事务回滚后用户仍被下线。</p>
+     */
     @Transactional
     public void change(String currentPassword, String newPassword) {
         passwordPolicy.validate(newPassword);
         long userId = authenticatedUserProvider.currentUserId();
         UserAccount account = repository.findById(new UserId(userId))
-                .orElseThrow(() -> new BizException("USER_NOT_FOUND", "用户不存在"));
+                .orElseThrow(() -> new BizException(BizErrorCode.USER_NOT_FOUND));
         LoginIdentity identity = account.identities().stream()
                 .filter(item -> item.passwordCredential() != null)
                 .findFirst()
-                .orElseThrow(() -> new BizException("PASSWORD_LOGIN_UNAVAILABLE", "当前账号未启用密码登录"));
+                .orElseThrow(() -> new BizException(BizErrorCode.PASSWORD_LOGIN_UNAVAILABLE));
         if (!passwordHasher.matches(currentPassword, identity.passwordCredential().passwordHash())) {
-            throw new BizException("INVALID_CURRENT_PASSWORD", "当前密码错误");
+            throw new BizException(BizErrorCode.INVALID_CURRENT_PASSWORD);
         }
         if (passwordHasher.matches(newPassword, identity.passwordCredential().passwordHash())) {
-            throw new BizException("PASSWORD_REUSED", "新密码不能与当前密码相同");
+            throw new BizException(BizErrorCode.PASSWORD_REUSED);
         }
         OffsetDateTime now = OffsetDateTime.now();
         identity.replacePassword(new PasswordCredential(passwordHasher.hash(newPassword), now));

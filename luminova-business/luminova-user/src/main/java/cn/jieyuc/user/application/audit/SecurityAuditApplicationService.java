@@ -1,5 +1,7 @@
 package cn.jieyuc.user.application.audit;
 
+import cn.jieyuc.user.application.port.audit.SecurityAuditRepository;
+
 import org.springframework.stereotype.Service;
 
 /**

@@ -553,7 +553,7 @@ Sa-Token 细节全部隐藏在 `SaTokenSessionAdapter` 中。这是一个深模�
 | `UserProfileApplicationService` | application | 查询和更新本人允许修改的资料 | 修改角色、账号状态或登录身份 |
 | `AdminUserApplicationService` | application | 管理员查询及启用/禁用账号，记录原因并触发会话撤销事件/端口 | 允许操作者禁用自己、修改密码 |
 | `AccountAuthenticationFacade` | interfaces/rpc | 将 Dubbo DTO 转成应用命令并返回防腐层 DTO | 直接调用 Mapper、返回领域对象 |
-| `MybatisUserAccountRepository` | infrastructure | 把聚合与三张持久化表相互转换并实现并发约束错误映射 | 承载注册、角色或禁用规则 |
+| `UserAccountRepositoryAdapter` | infrastructure | 把聚合与三张持久化表相互转换并实现并发约束错误映射 | 承载注册、角色或禁用规则 |
 | `BCryptPasswordHasher` | infrastructure | 使用配置的 BCrypt cost 实现哈希与恒时语义匹配 | 决定密码业务规则 |
 
 类命名不得使用含义模糊的 `UserService`、`AuthService`、`CommonUtil` 或 `Manager`。应用服务按用例命名，领域对象按业务语言命名，适配器按技术与所实现接口命名。

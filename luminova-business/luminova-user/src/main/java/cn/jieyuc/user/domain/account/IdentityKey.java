@@ -12,10 +12,18 @@ import java.util.Objects;
 public record IdentityKey(IdentityType type, String provider, String identifier) {
 
     /**
+     * 本系统自己颁发的登录身份提供方。
+     *
+     * <p>手机号、邮箱等本地身份使用该值。第三方身份使用各自的提供方代号，不能复用它。</p>
+     */
+    public static final String LOCAL_PROVIDER = "LOCAL";
+
+    /**
      * 校验并创建身份键。
      */
     public IdentityKey {
         Objects.requireNonNull(type, "身份类型不能为空");
+        // 提供方大小写不参与身份区分，创建时统一成大写。
         provider = requireText(provider, "身份提供方").toUpperCase(Locale.ROOT);
         identifier = requireText(identifier, "身份标识");
         if (provider.length() > 64 || identifier.length() > 255) {

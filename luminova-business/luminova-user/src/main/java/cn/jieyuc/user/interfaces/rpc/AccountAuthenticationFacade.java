@@ -7,11 +7,11 @@ import cn.jieyuc.luminova.api.account.PhonePasswordQuery;
 import cn.jieyuc.luminova.api.account.RegisterPhoneUserCommand;
 import cn.jieyuc.luminova.api.account.ResetPhonePasswordCommand;
 import cn.jieyuc.luminova.api.account.SecurityAuditCommand;
-import cn.jieyuc.user.application.audit.SecurityAuditApplicationService;
-import cn.jieyuc.user.application.audit.SecurityAuditEvent;
+import cn.jieyuc.user.application.account.AccountAuthSnapshotConverter;
 import cn.jieyuc.user.application.account.AccountCredentialApplicationService;
 import cn.jieyuc.user.application.account.RegisterUserApplicationService;
-import cn.jieyuc.user.domain.account.LoginIdentity;
+import cn.jieyuc.user.application.audit.SecurityAuditApplicationService;
+import cn.jieyuc.user.application.audit.SecurityAuditEventConverter;
 import cn.jieyuc.user.domain.account.UserAccount;
 import org.apache.dubbo.config.annotation.DubboService;
 
@@ -26,21 +26,25 @@ public class AccountAuthenticationFacade implements AccountAuthenticationApi {
     private final RegisterUserApplicationService registerService;
     private final AccountCredentialApplicationService credentialService;
     private final SecurityAuditApplicationService auditService;
+    private final AccountAuthSnapshotConverter snapshotConverter;
+    private final SecurityAuditEventConverter auditEventConverter;
 
     public AccountAuthenticationFacade(RegisterUserApplicationService registerService,
                                        AccountCredentialApplicationService credentialService,
-                                       SecurityAuditApplicationService auditService) {
+                                       SecurityAuditApplicationService auditService,
+                                       AccountAuthSnapshotConverter snapshotConverter,
+                                       SecurityAuditEventConverter auditEventConverter) {
         this.registerService = registerService;
         this.credentialService = credentialService;
         this.auditService = auditService;
+        this.snapshotConverter = snapshotConverter;
+        this.auditEventConverter = auditEventConverter;
     }
 
     @Override
     public AccountAuthSnapshot registerPhoneUser(RegisterPhoneUserCommand command) {
         UserAccount account = registerService.registerPhone(command.phone(), command.password());
-        LoginIdentity identity = account.identities().getFirst();
-        return new AccountAuthSnapshot(account.id().value(), identity.id(),
-                account.role().name(), account.status().name());
+        return snapshotConverter.toSnapshot(account, account.identities().getFirst());
     }
 
     @Override
@@ -60,9 +64,6 @@ public class AccountAuthenticationFacade implements AccountAuthenticationApi {
 
     @Override
     public void recordSecurityAudit(SecurityAuditCommand command) {
-        auditService.record(new SecurityAuditEvent(command.eventType(), command.actorUserId(),
-                command.targetUserId(), command.identityType(), command.identifierMasked(),
-                command.result(), command.reasonCode(), command.ip(), command.userAgent(),
-                command.requestId()));
+        auditService.record(auditEventConverter.toEvent(command));
     }
 }

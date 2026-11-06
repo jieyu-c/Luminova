@@ -1,7 +1,9 @@
 package cn.jieyuc.luminovaauth.application.account;
 
+import cn.jieyuc.luminovaauth.application.port.account.AccountGateway;
+
 import cn.jieyuc.luminova.api.account.AccountAuthSnapshot;
-import cn.jieyuc.luminovaauth.application.session.SessionIssuer;
+import cn.jieyuc.luminovaauth.application.port.session.SessionIssuer;
 import cn.jieyuc.luminovaauth.application.verification.VerificationChallengeApplicationService;
 import cn.jieyuc.luminovaauth.domain.verification.VerificationPurpose;
 import org.springframework.stereotype.Service;

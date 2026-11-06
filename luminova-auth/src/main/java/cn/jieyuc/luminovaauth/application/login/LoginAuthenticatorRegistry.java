@@ -1,5 +1,8 @@
 package cn.jieyuc.luminovaauth.application.login;
 
+import cn.jieyuc.luminovaauth.application.port.login.LoginCommand;
+import cn.jieyuc.luminovaauth.application.port.login.LoginAuthenticator;
+
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;

@@ -8,3 +8,10 @@ spring:
     url: ${POSTGRES_URL:jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:luminova}}
     username: ${POSTGRES_USER:luminova}
     password: ${POSTGRES_PASSWORD:luminova123}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: input

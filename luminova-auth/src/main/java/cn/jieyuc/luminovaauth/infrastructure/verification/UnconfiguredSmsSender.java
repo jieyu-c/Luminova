@@ -1,7 +1,8 @@
 package cn.jieyuc.luminovaauth.infrastructure.verification;
 
+import cn.jieyuc.luminova.base.exceptions.BizErrorCode;
 import cn.jieyuc.luminova.base.exceptions.BizException;
-import cn.jieyuc.luminovaauth.application.verification.SmsSender;
+import cn.jieyuc.luminovaauth.application.port.verification.SmsSender;
 import cn.jieyuc.luminovaauth.domain.verification.VerificationPurpose;
 
 /**
@@ -13,6 +14,6 @@ import cn.jieyuc.luminovaauth.domain.verification.VerificationPurpose;
 public class UnconfiguredSmsSender implements SmsSender {
     @Override
     public void send(String phone, String code, VerificationPurpose purpose) {
-        throw new BizException("SMS_PROVIDER_NOT_CONFIGURED", "短信服务暂不可用");
+        throw new BizException(BizErrorCode.SMS_PROVIDER_NOT_CONFIGURED);
     }
 }
