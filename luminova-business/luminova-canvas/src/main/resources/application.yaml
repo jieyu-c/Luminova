@@ -2,6 +2,10 @@ server:
   port: ${SERVER_PORT:8083}
 
 spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
   config:
     import:
       - classpath:luminova/nacos.yaml
