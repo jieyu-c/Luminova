@@ -33,6 +33,7 @@
     <rocketmq-client.version>5.2.2</rocketmq-client.version>
     <mybatis-plus.version>3.5.5</mybatis-plus.version>
     <archunit.version>1.3.0</archunit.version>
+    <aws-sdk.version>2.31.54</aws-sdk.version>
   </properties>
 
   <dependencies>
@@ -45,6 +46,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>bom</artifactId>
+        <version>${aws-sdk.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>

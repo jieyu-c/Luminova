@@ -9,6 +9,10 @@ docs
 !docs/
 docs/*
 !docs/development-standards.md
+!docs/design/
+docs/design/*
+!docs/design/unified-cloud-file-storage.md
+!docs/design/luminova-mq-sdk.md
 
 # idea dist
 .idea

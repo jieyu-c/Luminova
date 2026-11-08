@@ -1,0 +1,35 @@
+server:
+  port: ${SERVER_PORT:8084}
+
+spring:
+  application:
+    name: luminova-file
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+  config:
+    import:
+      - classpath:luminova/nacos.yaml
+      - classpath:luminova/datasource-postgresql.yaml
+
+luminova:
+  file:
+    upload-session-validity: ${FILE_UPLOAD_SESSION_VALIDITY:PT30M}
+    access-validity: ${FILE_ACCESS_VALIDITY:PT10M}
+    storage:
+      endpoint: ${RUSTFS_ENDPOINT}
+      region: ${RUSTFS_REGION:us-east-1}
+      access-key: ${RUSTFS_ACCESS_KEY}
+      secret-key: ${RUSTFS_SECRET_KEY}
+      bucket: ${RUSTFS_BUCKET:luminova-private}
+      path-style: ${RUSTFS_PATH_STYLE:true}
+      connect-timeout: ${RUSTFS_CONNECT_TIMEOUT:PT3S}
+      request-timeout: ${RUSTFS_REQUEST_TIMEOUT:PT10S}
+
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  is-read-header: true
+  is-read-body: false
+  is-read-cookie: false
