@@ -39,10 +39,7 @@
         <module>luminova-base</module>
         <module>luminova-lock</module>
         <module>luminova-cache</module>
-        <module>luminova-messaging-api</module>
-        <module>luminova-messaging-core</module>
-        <module>luminova-messaging-rocketmq-spring-boot-starter</module>
-        <module>luminova-messaging-reliability-spring-boot-starter</module>
+        <module>luminova-messaging</module>
     </modules>
     <dependencies>
         <dependency>

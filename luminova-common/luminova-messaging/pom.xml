@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cn.jieyuc</groupId>
+        <artifactId>luminova-common</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>luminova-messaging</artifactId>
+    <packaging>pom</packaging>
+    <name>luminova-messaging</name>
+    <description>Luminova 平台无关的可靠消息契约、核心能力与基础设施适配</description>
+
+    <modules>
+        <module>luminova-messaging-api</module>
+        <module>luminova-messaging-core</module>
+        <module>luminova-messaging-rocketmq-spring-boot-starter</module>
+        <module>luminova-messaging-reliability-spring-boot-starter</module>
+    </modules>
+</project>
