@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 
 /**
  * 认证上下文 HTTP Controller。
@@ -86,9 +85,9 @@ public class AuthenticationController {
 
     /** 幂等注销当前会话。 */
     @PostMapping("/logout")
-    public Map<String, Boolean> logout() {
+    public ResponseEntity<Void> logout() {
         sessionService.logout();
-        return Map.of("success", true);
+        return ResponseEntity.noContent().build();
     }
 
     /** 使用短信挑战找回密码。 */
