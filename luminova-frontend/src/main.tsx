@@ -6,6 +6,7 @@ import "@fontsource/noto-serif-sc/500.css";
 import "@fontsource/noto-serif-sc/600.css";
 import { App } from "./App";
 import "./styles.css";
+import "./workspace.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode><App /></React.StrictMode>,

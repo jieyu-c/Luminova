@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { ArrowRight, CircleNotch, Play, X } from "@phosphor-icons/react";
+import { Workspace } from "./Workspace";
 
 const navItems = [
   { label: "产品", target: "product" },
@@ -25,6 +26,7 @@ function scrollToSection(target: string) {
  * 统一进入认证提示层，后续接入认证路由时无需改变首页信息结构。
  */
 export function App() {
+  const [page, setPage] = useState<"home" | "workspace">(() => window.location.pathname.startsWith("/workspace") ? "workspace" : "home");
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [loginMethod, setLoginMethod] = useState<"code" | "password">("code");
@@ -72,7 +74,12 @@ export function App() {
 
     setAuthError("");
     setIsSubmitting(true);
-    window.setTimeout(() => setIsSubmitting(false), 900);
+    window.setTimeout(() => {
+      setIsSubmitting(false);
+      setAuthOpen(false);
+      window.history.pushState({}, "", "/workspace");
+      setPage("workspace");
+    }, 900);
   };
 
   useEffect(() => {
@@ -89,6 +96,13 @@ export function App() {
       window.removeEventListener("keydown", handleEscape);
     };
   }, [authOpen]);
+
+  if (page === "workspace") {
+    return <Workspace onExit={() => {
+      window.history.pushState({}, "", "/");
+      setPage("home");
+    }} />;
+  }
 
   return (
     <div className="site-shell">
