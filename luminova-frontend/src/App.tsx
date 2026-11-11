@@ -71,30 +71,40 @@ export function App() {
 
       <main id="top">
         <section className="hero" id="product" aria-labelledby="hero-title">
-          <div className="hero-copy">
-            <p className="eyebrow">AI VIDEO DIRECTION · 2026</p>
-            <h1 id="hero-title">把想象，<span>执导成片</span></h1>
-            <div className="hero-subline" aria-hidden="true">
-              <i />
-              <p>你的判断始终在创作中心</p>
-              <i />
+          <div className="hero-reel" id="work" aria-label="五段斜切电影画面组成的长卷缓慢向左循环移动">
+            <div className="film-track" aria-hidden="true">
+              <img src="/assets/luminova-film-montage-five-wide.png" alt="" />
+              <img src="/assets/luminova-film-montage-five-wide.png" alt="" />
             </div>
+            <p className="film-caption"><span>FIVE SCENES · ONE FILM</span><span>36S · CONTINUOUS LOOP</span></p>
           </div>
 
-          <figure className="cinematic-frame" id="work">
-            <img src="/assets/luminova-homepage-cinematic-triptych.png" alt="女性创作者、雾中山岭与胶片放映机组成的电影画面" />
-            <figcaption><span>THE FIRST LIGHT</span><span>FILM STUDY · 01</span></figcaption>
-          </figure>
+          <div className="hero-shade" aria-hidden="true" />
+          <div className="hero-content">
+            <div className="hero-copy">
+              <p className="eyebrow">AI VIDEO DIRECTION · 2026</p>
+              <h1 id="hero-title">把想象，<span>执导成片</span></h1>
+              <div className="hero-subline" aria-hidden="true">
+                <i />
+                <p>你的判断始终在创作中心</p>
+                <i />
+              </div>
+            </div>
 
-          <div className="hero-actions">
-            <button className="primary-cta" type="button" onClick={() => setAuthOpen(true)}>
-              开始一部新作品 <ArrowRight aria-hidden="true" weight="light" />
-            </button>
-            <button className="secondary-cta" type="button" onClick={() => scrollToSection("method")}>
-              <Play aria-hidden="true" weight="fill" /> 了解导演 Agent
-            </button>
+            <div className="hero-actions">
+              <button className="primary-cta" type="button" onClick={() => setAuthOpen(true)}>
+                开始一部新作品 <ArrowRight aria-hidden="true" weight="light" />
+              </button>
+              <button className="secondary-cta" type="button" onClick={() => scrollToSection("method")}>
+                <Play aria-hidden="true" weight="fill" /> 了解导演 Agent
+              </button>
+            </div>
+            <p className="trust-line">每次执行前展示计划，由你决定是否继续</p>
           </div>
-          <p className="trust-line">每次执行前展示计划，由你决定是否继续</p>
+
+          <div className="film-progress" aria-hidden="true">
+            <span>00:00</span><i /><span>00:36</span>
+          </div>
         </section>
 
         <section className="method-section" id="method" aria-labelledby="method-title">
