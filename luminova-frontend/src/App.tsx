@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ArrowRight, Play, X } from "@phosphor-icons/react";
+import { FormEvent, useEffect, useState } from "react";
+import { ArrowRight, CircleNotch, Play, X } from "@phosphor-icons/react";
 
 const navItems = [
   { label: "产品", target: "product" },
@@ -26,7 +26,54 @@ function scrollToSection(target: string) {
  */
 export function App() {
   const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  const [loginMethod, setLoginMethod] = useState<"code" | "password">("code");
+  const [authError, setAuthError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [agreed, setAgreed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const openAuth = (mode: "login" | "register" = "login") => {
+    setAuthMode(mode);
+    setAuthError("");
+    setAuthOpen(true);
+  };
+
+  const switchAuthMode = (mode: "login" | "register") => {
+    setAuthMode(mode);
+    setAuthError("");
+    setIsSubmitting(false);
+  };
+
+  const handleAuthSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const phone = String(data.get("phone") ?? "").trim();
+    const credentialName = authMode === "register" ? "code" : loginMethod === "password" ? "password" : "code";
+    const credential = String(data.get(credentialName) ?? "").trim();
+    const newPassword = String(data.get("password") ?? "");
+
+    if (!/^1\d{10}$/.test(phone)) {
+      setAuthError("请输入正确的 11 位手机号");
+      return;
+    }
+    if (!credential) {
+      setAuthError(authMode === "login" && loginMethod === "password" ? "请输入登录密码" : "请输入 6 位验证码");
+      return;
+    }
+    if (authMode === "register" && newPassword.length < 8) {
+      setAuthError("密码至少需要 8 位字符");
+      return;
+    }
+    if (authMode === "register" && !agreed) {
+      setAuthError("请先阅读并同意服务协议与隐私政策");
+      return;
+    }
+
+    setAuthError("");
+    setIsSubmitting(true);
+    window.setTimeout(() => setIsSubmitting(false), 900);
+  };
 
   useEffect(() => {
     if (!authOpen) return;
@@ -61,7 +108,7 @@ export function App() {
           ))}
         </nav>
         <div className="header-actions">
-          <button className="login-button" type="button" onClick={() => setAuthOpen(true)}>登录</button>
+          <button className="login-button" type="button" onClick={() => openAuth("login")}>登录</button>
           <button className="menu-button" type="button" aria-label="展开导航" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
             <span />
             <span />
@@ -92,7 +139,7 @@ export function App() {
             </div>
 
             <div className="hero-actions">
-              <button className="primary-cta" type="button" onClick={() => setAuthOpen(true)}>
+              <button className="primary-cta" type="button" onClick={() => openAuth("register")}>
                 开始一部新作品 <ArrowRight aria-hidden="true" weight="light" />
               </button>
               <button className="secondary-cta" type="button" onClick={() => scrollToSection("method")}>
@@ -125,7 +172,7 @@ export function App() {
         <section className="about-section" id="about">
           <p className="about-kicker">LUMINOVA · 灵衍</p>
           <p className="about-statement">为专业创作者打造的 AI 视频创作空间。<br />Agent 负责拓展可能，你负责判断什么值得被留下。</p>
-          <button type="button" onClick={() => setAuthOpen(true)}>进入 Luminova <ArrowRight aria-hidden="true" weight="light" /></button>
+          <button type="button" onClick={() => openAuth("register")}>进入 Luminova <ArrowRight aria-hidden="true" weight="light" /></button>
         </section>
       </main>
 
@@ -137,13 +184,71 @@ export function App() {
 
       {authOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={() => setAuthOpen(false)}>
-          <section className="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title" onMouseDown={(event) => event.stopPropagation()}>
+          <section className={`auth-dialog is-${authMode}`} role="dialog" aria-modal="true" aria-labelledby="auth-title" onMouseDown={(event) => event.stopPropagation()}>
             <button className="dialog-close" type="button" aria-label="关闭" onClick={() => setAuthOpen(false)}><X aria-hidden="true" weight="light" /></button>
-            <p className="dialog-kicker">WELCOME TO LUMINOVA</p>
-            <h2 id="auth-title">让第一部作品开始流动</h2>
-            <p>登录后创建画布、整理创作条目，并继续最近打开的作品。</p>
-            <div className="dialog-actions"><button type="button">手机号登录</button><button type="button">创建账号</button></div>
-            <small>认证页面将在下一阶段接入现有登录与注册接口。</small>
+            <div className="auth-heading">
+              <p className="dialog-kicker">{authMode === "login" ? "WELCOME BACK" : "BEGIN YOUR STORY"}</p>
+              <h2 id="auth-title">{authMode === "login" ? "继续你的创作" : "创建创作者账号"}</h2>
+            </div>
+
+            <div className="auth-tabs" role="tablist" aria-label="登录或注册">
+              <button className={authMode === "login" ? "is-active" : ""} type="button" role="tab" aria-selected={authMode === "login"} onClick={() => switchAuthMode("login")}>登录</button>
+              <button className={authMode === "register" ? "is-active" : ""} type="button" role="tab" aria-selected={authMode === "register"} onClick={() => switchAuthMode("register")}>注册</button>
+            </div>
+
+            <form className="auth-form" onSubmit={handleAuthSubmit} noValidate>
+              <label className="auth-field">
+                <span>手机号</span>
+                <input name="phone" type="tel" inputMode="numeric" autoComplete="tel" placeholder="请输入手机号" aria-invalid={Boolean(authError)} />
+              </label>
+
+              {loginMethod === "code" || authMode === "register" ? (
+                <label className="auth-field">
+                  <span>验证码</span>
+                  <div className="auth-input-action">
+                    <input name="code" type="text" inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="6 位验证码" />
+                    <button type="button">获取验证码</button>
+                  </div>
+                </label>
+              ) : (
+                <label className="auth-field">
+                  <span>密码</span>
+                  <input name="password" type="password" autoComplete="current-password" placeholder="请输入登录密码" />
+                </label>
+              )}
+
+              {authMode === "register" && (
+                <label className="auth-field">
+                  <span>设置密码</span>
+                  <input name="password" type="password" autoComplete="new-password" minLength={8} placeholder="至少 8 位字符" />
+                </label>
+              )}
+
+              {authError && <p className="auth-error" role="alert">{authError}</p>}
+
+              <button className="auth-submit" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? <><CircleNotch aria-hidden="true" className="spin" /> 处理中...</> : <>{authMode === "login" ? "登录并继续" : "创建账号并开始"}<ArrowRight aria-hidden="true" /></>}
+              </button>
+
+              {authMode === "login" ? (
+                <>
+                  <div className="auth-divider"><i /><span>或</span><i /></div>
+                  <button className="auth-secondary" type="button" onClick={() => {
+                    setLoginMethod((method) => method === "code" ? "password" : "code");
+                    setAuthError("");
+                  }}>{loginMethod === "code" ? "使用密码登录" : "使用验证码登录"}</button>
+                  <p className="auth-switch">首次来到灵衍？ <button type="button" onClick={() => switchAuthMode("register")}>创建账号</button></p>
+                </>
+              ) : (
+                <>
+                  <label className="auth-consent" id="terms">
+                    <input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} />
+                    <span>我已阅读并同意 <a href="#terms">服务协议</a> 与 <a id="privacy" href="#privacy">隐私政策</a></span>
+                  </label>
+                  <p className="auth-switch">已有账号？ <button type="button" onClick={() => switchAuthMode("login")}>返回登录</button></p>
+                </>
+              )}
+            </form>
           </section>
         </div>
       )}
